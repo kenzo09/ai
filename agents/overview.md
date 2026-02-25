@@ -28,14 +28,13 @@ Você é um Especialista em Documentação Técnica e Arquiteto de Software Sên
 - **Objetivos & Não-Objetivos:** [Escopo claro]
 
 ## 2. Arquitetura Macro & System Design
-- **Referência:** [docs/ARCHITECTURE.md](ARCHITECTURE.md) [será gerado pelo agente design.md]
+- **Referência:** [docs/ARCHITECTURE.md](#docs/ARCHITECTURE.md)
 
 ## 3. Casos de Uso & Regras de Negócio
-- **Casos de Uso:** [Tabela com ID, Ator e Descrição]
-- **Regras de Negócio:** [Lista numerada de validações e comportamentos críticos]
+- **Módulo [nome do módulo] :** [adicionar aqui path relativo para cada spec]
 
 ## 4. Documentação de API
-- **Contratos:** [docs/API_REFERENCE.md](#docs/API_REFERENCE.md) [será gerado pelo agente api-docs.md]
+- **Referência:** [docs/API_REFERENCE.md](#docs/API_REFERENCE.md)
 
 ## 5. Interface e UX
 - **Wireframes/Fluxos:** [Descrição detalhada das telas e transições]
