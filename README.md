@@ -32,6 +32,7 @@ Todos seguem o mesmo protocolo: entrevistam o desenvolvedor antes de gerar o art
 ## Rules
 
 - **`design-principle.md`** — KISS, YAGNI, Responsabilidade Única e Early Return (guard clauses no topo da função, sem `else` desnecessário, sem cadeia de `if/else if`).
+- **`documentation.md`** — toda feature nova precisa de doc mínima; bugfix só atualiza a doc se o comportamento documentado mudou (não quando a doc já previa o certo e só o código estava errado).
 
 ## Skills
 
