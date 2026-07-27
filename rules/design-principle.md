@@ -1,38 +1,34 @@
-# Design Principles
+# Princípios de Design
 
-These principles apply to all code regardless of language, framework, or paradigm.
+Estes princípios se aplicam a todo código, independente de linguagem, framework ou paradigma.
 
 ## KISS — Keep It Simple, Stupid
 
-Prefer the simplest solution that correctly solves the problem.
+Prefira a solução mais simples que resolve o problema corretamente.
 
-- **DO**: Choose straightforward implementations over clever ones
-- **DO**: If two solutions work, pick the one easier to read and reason about
-- **DON'T**: Add abstraction layers, patterns, or indirection without a concrete, present need
-- **DON'T**: Over-engineer for hypothetical future requirements
+- **FAÇA**: Escolha implementações diretas em vez de espertas
+- **FAÇA**: Se duas soluções funcionam, escolha a mais fácil de ler e entender
+- **NÃO FAÇA**: Adicionar camadas de abstração, padrões ou indireção sem uma necessidade concreta e presente
+- **NÃO FAÇA**: Over-engineering para requisitos hipotéticos futuros
 
 ## YAGNI — You Aren't Gonna Need It
 
-Only implement what is required **right now**.
+Implemente apenas o que é necessário **agora**.
 
-- **DO**: Implement features when they are explicitly needed
-- **DON'T**: Add hooks, flags, extension points, or generalization based on speculation
-- **DON'T**: Build for "maybe later" — the future requirement may never come, or arrive differently
+- **FAÇA**: Implemente funcionalidades quando forem explicitamente necessárias
+- **NÃO FAÇA**: Adicionar hooks, flags, pontos de extensão ou generalização baseados em especulação
+- **NÃO FAÇA**: Construir para o "talvez depois" — o requisito futuro pode nunca chegar, ou chegar diferente
 
-## SOLID Principles
+## Responsabilidade Única
 
-### Single Responsibility
-Each function, class, or module must have **one clear purpose** and one reason to change.
+Cada função, classe ou módulo deve ter **um propósito claro** e um único motivo para mudar.
 
-### Open/Closed
-Entities should be **open for extension, closed for modification**.  
-Extend behavior by adding new code, not by changing existing stable code.
+## Fail Fast (Early Return)
 
-### Dependency Inversion
-High-level modules must not depend on low-level modules.  
-Both must depend on **abstractions** (interfaces/contracts), not concrete implementations.
+Trate condições de saída antecipada logo no topo da função — não deixe o caminho principal enterrado em uma cadeia de `if/else`.
 
-## Fail Fast
-
-Validate preconditions and detect errors **as early as possible**.  
-Raise or surface errors immediately when an invalid state is detected — do not defer or silently swallow failures.
+- **FAÇA**: Verifique a condição inválida ou de borda primeiro e retorne (`return`/`throw`/`continue`) imediatamente
+- **FAÇA**: Mantenha o caminho principal ("happy path") no nível de indentação mais raso
+- **NÃO FAÇA**: Encadear vários `if/else if/else` quando um guard clause resolve
+- **NÃO FAÇA**: Aninhar validações umas dentro das outras
+- **NÃO FAÇA**: Usar `else` depois de um `if` que já termina em `return`/`throw`/`continue` — se o `if` sai da função, o que vem depois já é o caminho principal, sem precisar de `else`
