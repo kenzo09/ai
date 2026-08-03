@@ -15,6 +15,8 @@ Converte artefatos de planejamento (specs, planos, issues, PRs) em documentaçã
 
 ```
 docs/
+  architecture/
+    overview.md                   # Visão macro do sistema (skill arch-docs)
   adrs/
     NNN-<titulo>.md               # Um ADR por decisão arquitetural
   features/
@@ -71,6 +73,9 @@ O que foi decidido.
 O que isso habilita, o que previne, o que dificulta.
 ```
 
+### Arquitetura (Overview)
+**Use a skill `arch-docs`.** Um artefato por repositório, em `docs/architecture/overview.md`: atores, componentes internos, dependências externas e comportamento na falha. Cria se não existe; atualiza se existe. É o topo da documentação — aponta para os demais artefatos, não os duplica.
+
 ### BDD
 **Use a skill `bdd-docs`.** Siga o formato Dado/Quando/Então (ou Given/When/Then — use o idioma do projeto). Cenários descrevem comportamento externamente observável, nunca internals.
 
@@ -107,7 +112,7 @@ Para migração retroativa: processe em ordem cronológica. Artefatos mais recen
 
 **Crítico:** O artefato de planejamento descreve intenção; o código é a verdade.
 
-- Para cada afirmação, verifique se bate com o código atual
+- Para cada afirmação, verifique se corresponde ao código atual
 - Descarte decisões que foram alteradas ou nunca implementadas
 - Use os nomes atuais do código (pacotes, env vars, endpoints) — não os da spec
 - Env vars: verifique nos arquivos de configuração do projeto (`.env`, `CLAUDE.md`, `README`, etc.)
@@ -120,9 +125,13 @@ Da fonte, liste:
 
 ### Passo 4: Criar ou atualizar docs
 
-Para cada módulo afetado:
+Comece pelo topo: `docs/architecture/overview.md` — **use a skill `arch-docs`**. Rode sempre que a mudança tocar um
+ponto de entrada, uma integração externa, um datastore ou o comportamento na falha de alguma dependência. Se o
+artefato não existe, a skill cria; se existe, atualiza.
+
+Depois, para cada módulo afetado:
 - `prd.md` — criar se módulo é novo; atualizar escopo se feature expandiu
-- `bdd.md` — adicionar/atualizar/remover cenários para bater com o código (use skill bdd-docs)
+- `bdd.md` — adicionar/atualizar/remover cenários para corresponder ao código (use skill bdd-docs)
 - `reference.md` — atualizar contratos de API, env vars, códigos de erro
 - ADRs — um por decisão não-óbvia, não já documentada
 
@@ -140,9 +149,10 @@ Quando invocado para auditar ou migrar documentação existente:
 
 1. Localize todos os artefatos de planejamento disponíveis
 2. Para cada artefato, identifique: módulo, decisões tomadas, comportamentos descritos
-3. Cruze com `docs/features/` e `docs/adrs/` existentes
+3. Cruze com `docs/architecture/`, `docs/features/` e `docs/adrs/` existentes
 4. Para cada lacuna (conteúdo da spec ausente nos docs), verifique no código e escreva o doc
 5. Para cada doc que contradiz o código atual, atualize
+6. Se não há visão macro do sistema, rode a skill `arch-docs` — sem ela o leitor não tem por onde começar
 
 **Descarte da spec se:**
 - O código não implementa
@@ -154,7 +164,7 @@ Quando invocado para auditar ou migrar documentação existente:
 | Regra | Por quê |
 |-------|---------|
 | Idioma dos docs = idioma do projeto | Consistência para a audiência real |
-| Reference verificado contra o código | Previne drift docs-código |
+| Reference verificado contra o código | Previne divergência entre doc e código |
 | Um ADR por decisão, não por spec | ADRs respondem "por quê?", não "o que planejamos?" |
 | Cenários BDD = externamente observáveis | Nunca descreva internals de implementação |
 | PRD sem referências a código | Audiência do PRD é não-técnica |
@@ -170,5 +180,6 @@ Quando invocado para auditar ou migrar documentação existente:
 | Usar nomes da spec (pacotes, env vars, paths) | Verificar nomes reais no código |
 | Reference listando env vars desatualizadas | Verificar nomes nos arquivos de config do projeto |
 | Ignorar PRD para módulo novo | Todo módulo novo ganha PRD |
+| Documentar features sem nenhuma visão macro | Rode `arch-docs` — o overview é a porta de entrada dos demais docs |
 | Não atualizar o índice de docs | Índice deve refletir todos os docs existentes |
 | Linkar para artefatos gitignored/externos | Docs devem ser auto-contidos no repositório |
