@@ -5,7 +5,9 @@ the user which parts to import before downloading anything.
 
 Usage: list_claude_tree.py <owner/repo> [ref] [subpath]
   ref     default: repo's default branch
-  subpath default: .claude
+  subpath default: .claude; pass "." to list the REPO ROOT instead - do that whenever
+          .claude/ turns up empty, to see a non-standard layout. Use "." and not "/":
+          Git Bash on Windows rewrites a bare "/" into the Git install path.
 """
 import json
 import os
@@ -39,7 +41,9 @@ def main():
 
     repo = args[0]
     ref = args[1] if len(args) > 1 and args[1] else ""
-    subpath = (args[2] if len(args) > 2 and args[2] else ".claude").rstrip("/")
+    raw_subpath = args[2] if len(args) > 2 else ""
+    subpath = (raw_subpath if raw_subpath else ".claude").rstrip("/")
+    at_root = subpath in ("", ".")  # "/" or "." asked for the repo root
 
     if not ref:
         info = api_get(f"https://api.github.com/repos/{repo}")
@@ -52,7 +56,7 @@ def main():
 
     print(f"REF={ref}")
 
-    prefix = subpath + "/"
+    prefix = "" if at_root else subpath + "/"
     top_files = defaultdict(int)
     second_level = defaultdict(lambda: defaultdict(int))
     found = False
@@ -73,15 +77,16 @@ def main():
 
     if not found:
         print(f"No files found under {subpath}/ in this repo/ref.")
+        print('Re-run with subpath "." to list the repo root and spot a non-standard layout.')
         return
 
     for top in sorted(top_files):
         if top not in second_level:
-            print(f"FILE  {subpath}/{top}")
+            print(f"FILE  {prefix}{top}")
         else:
-            print(f"DIR   {subpath}/{top}/  ({top_files[top]} files)")
+            print(f"DIR   {prefix}{top}/  ({top_files[top]} files)")
             for second in sorted(second_level[top]):
-                print(f"        - {subpath}/{top}/{second}  ({second_level[top][second]} files)")
+                print(f"        - {prefix}{top}/{second}  ({second_level[top][second]} files)")
 
 
 if __name__ == "__main__":

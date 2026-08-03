@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Downloads selected paths from a public GitHub repo into a staging
-directory, then reports which files are NEW, CONFLICT (path exists
-locally with different content), or IDENTICAL versus a local target
-directory. Never writes into the target itself - the caller (agent)
-decides what to do with conflicts.
+directory, then reports each file as NEW, IDENTICAL, EOL-ONLY (same content,
+different line endings) or CONFLICT (exists locally with different content)
+versus a target directory inside the CURRENT project. Never writes into the
+target itself - the caller (agent) decides what to do with conflicts.
 
 Run list_claude_tree.py first to see what's available and let the user
 pick which of SELECTED... to import (or the root itself for everything).
@@ -11,7 +11,9 @@ pick which of SELECTED... to import (or the root itself for everything).
 Usage: fetch_claude_config.py <owner/repo> [ref] [root_subpath] [target_dir] [selected...]
   ref          default: repo's default branch
   root_subpath default: .claude - the local target_dir corresponds to this repo path
-  target_dir   default: ./.claude
+  target_dir   default: .claude - ALWAYS relative to the current working directory;
+               a path resolving outside the cwd is refused (exit 2). Run from the
+               project root.
   selected...  one or more repo paths to import, each equal to root_subpath or nested
                under it (e.g. ".claude/skills", ".claude/agents/reviewer.md",
                ".claude/CLAUDE.md"). Defaults to [root_subpath] - i.e. import everything.
@@ -52,6 +54,13 @@ def download(url, dest: Path):
         dest.write_bytes(resp.read())
 
 
+def same_but_eol(a: Path, b: Path):
+    """True when two files differ only in line endings - a constant false-positive
+    source on Windows, where a CRLF checkout diffs against LF raw GitHub content."""
+    norm = lambda p: p.read_bytes().replace(b"\r\n", b"\n")
+    return norm(a) == norm(b)
+
+
 def under(path, sel):
     sel = sel.rstrip("/")
     return path == sel or path.startswith(sel + "/")
@@ -66,10 +75,26 @@ def main():
     repo = args[0]
     ref = args[1] if len(args) > 1 and args[1] else ""
     root = (args[2] if len(args) > 2 and args[2] else ".claude").rstrip("/")
-    target_dir = args[3] if len(args) > 3 and args[3] else "./.claude"
+    target_dir = args[3] if len(args) > 3 and args[3] else ".claude"
     selected = args[4:] if len(args) > 4 else []
     if not selected:
         selected = [root]
+
+    # target_dir is always resolved inside the current project. This skill imports
+    # into the project you are standing in, never into a global config dir.
+    project = Path.cwd().resolve()
+    target_path = (project / target_dir).resolve()
+    if target_path != project and project not in target_path.parents:
+        print(
+            "REFUSED: target_dir must stay inside the current project.\n"
+            f"  project (cwd): {project}\n"
+            f"  target_dir:    {target_path}\n"
+            "Run this script from the project root and pass a RELATIVE target_dir such as\n"
+            "'.claude' or '.claude/skills'. Importing into a global config dir (~/.claude)\n"
+            "is not what this skill does - ask the user first if that is really wanted.",
+            file=sys.stderr,
+        )
+        sys.exit(2)
 
     if not ref:
         info = api_get(f"https://api.github.com/repos/{repo}")
@@ -105,9 +130,8 @@ def main():
 
     print(f"Downloaded {len(paths)} file(s) from {repo}@{ref} (selected: {' '.join(selected)}) into {staging}")
     print()
-    print(f"=== STATUS vs {target_dir} ===")
+    print(f"=== STATUS vs {target_path} ===")
     root_prefix = root + "/"
-    target_path = Path(target_dir)
     for p in paths:
         rel = p[len(root_prefix):] if p.startswith(root_prefix) else p
         local_file = target_path / rel
@@ -116,6 +140,8 @@ def main():
             print(f"NEW      {rel}")
         elif filecmp.cmp(local_file, staged_file, shallow=False):
             print(f"IDENTICAL {rel}")
+        elif same_but_eol(local_file, staged_file):
+            print(f"EOL-ONLY {rel}")
         else:
             print(f"CONFLICT {rel}")
 
