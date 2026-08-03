@@ -3,9 +3,9 @@ name: live-docs
 description: Use when an implementation plan finishes, when auditing whether existing docs reflect the current codebase, or when retroactively migrating planning artifacts (specs, plans, issues, PRs) into structured documentation.
 ---
 
-# Live Documentation
+# Documentação Viva
 
-## Overview
+## Visão Geral
 
 Converte artefatos de planejamento (specs, planos, issues, PRs) em documentação estruturada e viva, fiel ao código atual — não à intenção original do design.
 
@@ -72,7 +72,7 @@ O que isso habilita, o que previne, o que dificulta.
 ```
 
 ### BDD
-**Use a skill `bdd-docs`.** Siga o formato Dado/Quando/Então (ou Given/When/Then — match the project's language). Cenários descrevem comportamento externamente observável, nunca internals.
+**Use a skill `bdd-docs`.** Siga o formato Dado/Quando/Então (ou Given/When/Then — use o idioma do projeto). Cenários descrevem comportamento externamente observável, nunca internals.
 
 ### Reference
 **Propósito:** Contratos que desenvolvedores dependem — endpoints, env vars, códigos de erro.

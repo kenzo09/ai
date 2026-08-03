@@ -1,100 +1,100 @@
 ---
-name: bdd-documentation
+name: bdd-docs
 description: Use when a behavior is added, modified, or removed — whether business logic, authorization rules, API contracts, or core technical flows. Also use when reviewing whether existing BDD docs reflect the current system after a code change.
 ---
 
-# BDD Documentation
+# Documentação BDD
 
-## Overview
+## Visão Geral
 
-Document observable system behaviors as BDD scenarios in `docs/bdd/`. One file per behavioral unit (component, flow, or domain). Scenarios describe what the system does from the outside — not how it does it internally.
+Documente comportamentos observáveis do sistema como cenários BDD em `docs/bdd/`. Um arquivo por unidade de comportamento (componente, fluxo ou domínio). Cenários descrevem o que o sistema faz visto de fora — não como faz internamente.
 
-## When to Use
+## Quando Usar
 
-Create or update a BDD doc whenever:
-- A business rule is introduced or changes
-- An API contract, authorization policy, or data validation rule changes
-- A cross-cutting technical flow (auth, multi-tenancy, import pipeline) changes
-- A new domain area is introduced
+Crie ou atualize um doc BDD sempre que:
+- Uma regra de negócio é introduzida ou muda
+- Um contrato de API, política de autorização ou regra de validação de dados muda
+- Um fluxo técnico transversal (auth, multi-tenancy, pipeline de importação) muda
+- Uma nova área de domínio é introduzida
 
-**When NOT to use:** Routine CRUD with no invariants or special rules. If every field is optional and any value is accepted, there is nothing behavioral to document.
+**Quando NÃO usar:** CRUD rotineiro sem invariantes ou regras especiais. Se todo campo é opcional e qualquer valor é aceito, não há nada comportamental a documentar.
 
-## What to Document
+## O Que Documentar
 
-Two types of content belong in BDD docs:
+Dois tipos de conteúdo pertencem aos docs BDD:
 
-**Business behaviors** — rules visible to users and stakeholders:
-- Validation rules (required fields, formats, uniqueness constraints)
-- Authorization (who can do what, under what conditions)
-- Domain invariants (e.g., enrollment number unique per school, not globally)
-- Workflow rules (transactional creation of multiple records, partial success on import)
+**Comportamentos de negócio** — regras visíveis a usuários e stakeholders:
+- Regras de validação (campos obrigatórios, formatos, restrições de unicidade)
+- Autorização (quem pode fazer o quê, sob quais condições)
+- Invariantes de domínio (ex.: número de matrícula único por escola, não globalmente)
+- Regras de workflow (criação transacional de múltiplos registros, sucesso parcial na importação)
 
-**Technical behaviors** — rules invisible to users but contractual for developers:
-- Auth token flows (how a token from provider A becomes a valid token for system B)
-- Tenant resolution (how the system determines which tenant a request belongs to)
-- Fallback and default rules (what happens when a claim is missing)
-- Error response contracts (which status code, which message, under which condition)
+**Comportamentos técnicos** — regras invisíveis ao usuário, mas contratuais para desenvolvedores:
+- Fluxos de token de auth (como um token do provedor A se torna um token válido para o sistema B)
+- Resolução de tenant (como o sistema determina a qual tenant uma request pertence)
+- Regras de fallback e default (o que acontece quando uma claim está ausente)
+- Contratos de resposta de erro (qual status code, qual mensagem, sob qual condição)
 
-## File Organization
+## Organização de Arquivos
 
 ```
 docs/bdd/
-  auth-middleware.md          # Single-file domain
+  auth-middleware.md          # Domínio em arquivo único
   school-resolution.md
   student-management.md
-  payments/                   # Folder when a domain has 3+ distinct files
+  payments/                   # Pasta quando um domínio tem 3+ arquivos distintos
     checkout.md
     refunds.md
     subscription-billing.md
 ```
 
-**Use a folder when** a domain grows to 3 or more files. Name the folder after the domain (`payments/`, `notifications/`, `access-control/`). Keep files inside named by the specific behavior (`checkout.md`, not `payments-checkout.md` — the folder provides the namespace).
+**Use uma pasta quando** um domínio cresce para 3 arquivos ou mais. Nomeie a pasta com o nome do domínio (`payments/`, `notifications/`, `access-control/`). Mantenha os arquivos internos nomeados pelo comportamento específico (`checkout.md`, não `payments-checkout.md` — a pasta já fornece o namespace).
 
-**One file per behavioral unit.** Split when a file covers two distinct concepts that a developer would look up independently. Merge when scenarios are too thin to stand alone.
+**Um arquivo por unidade de comportamento.** Divida quando um arquivo cobre dois conceitos distintos que um dev consultaria de forma independente. Junte quando os cenários são finos demais para existirem sozinhos.
 
-## Canonical Structure
+## Estrutura Canônica
 
 ```markdown
-# <Component or Flow Name>
+# <Nome do Componente ou Fluxo>
 
 ## Visão Geral
 
-One or two sentences: what this does and what problem it solves.
+Uma ou duas frases: o que isso faz e qual problema resolve.
 
 ## Comportamentos
 
 ---
 
-### <Behavior Group Name>
+### <Nome do Grupo de Comportamento>
 
-Prose describing the behavior. State invariant rules here.
+Texto descrevendo o comportamento. Declare regras invariantes aqui.
 
 **Regras:**
-- Objective rule 1
-- Objective rule 2
+- Regra objetiva 1
+- Regra objetiva 2
 
-#### Cenário: <Scenario Name>
-**Dado** <precondition or initial state>
-**Quando** <triggering action or event>
-**Então** <expected observable result>
-**E** <additional result, if needed>
+#### Cenário: <Nome do Cenário>
+**Dado** <precondição ou estado inicial>
+**Quando** <ação ou evento que dispara>
+**Então** <resultado observável esperado>
+**E** <resultado adicional, se necessário>
 ```
 
-## Writing Rules
+## Regras de Escrita
 
-| Element | Rule |
+| Elemento | Regra |
 |---|---|
-| Filename | kebab-case matching the behavioral unit |
-| `### Behavior Group` | Groups related scenarios under one functional aspect |
-| `**Dado**` | Initial state or precondition — sets the context |
-| `**Quando**` | The action or event that triggers the behavior |
-| `**Então**` | The observable expected result |
-| `**E**` | Additional result — never repeat or rephrase `Então` |
-| Bold connectives | Always bold: `**Dado**`, `**Quando**`, `**Então**`, `**E**` |
-| Tone | Objective, jargon-free. Readable without knowing the code |
-| Scope | Externally observable behavior — no implementation details |
+| Nome do arquivo | kebab-case correspondente à unidade de comportamento |
+| `### Grupo de Comportamento` | Agrupa cenários relacionados sob um mesmo aspecto funcional |
+| `**Dado**` | Estado inicial ou precondição — define o contexto |
+| `**Quando**` | A ação ou evento que dispara o comportamento |
+| `**Então**` | O resultado esperado observável |
+| `**E**` | Resultado adicional — nunca repita nem reescreva o `Então` |
+| Conectivos em negrito | Sempre em negrito: `**Dado**`, `**Quando**`, `**Então**`, `**E**` |
+| Tom | Objetivo, sem jargão. Legível sem conhecer o código |
+| Escopo | Comportamento observável externamente — sem detalhes de implementação |
 
-## Canonical Example
+## Exemplo Canônico
 
 ```markdown
 ### Unicidade de Matrícula
@@ -116,12 +116,12 @@ O número de matrícula é único por escola, não globalmente. O mesmo número 
 **Então** o cadastro é aceito normalmente
 ```
 
-## Keeping Docs Current
+## Mantendo os Docs Atualizados
 
-When modifying any behavior, locate the corresponding scenario and:
+Ao modificar qualquer comportamento, localize o cenário correspondente e:
 
-1. **Update** — if the behavior changed
-2. **Add** — if it is new behavior with no existing scenario
-3. **Remove** — if the behavior was eliminated
+1. **Atualize** — se o comportamento mudou
+2. **Adicione** — se é comportamento novo sem cenário existente
+3. **Remova** — se o comportamento foi eliminado
 
-BDD docs must reflect the system's **actual current behavior** — not desired or historical behavior.
+Docs BDD devem refletir o **comportamento atual real** do sistema — não o comportamento desejado ou histórico.

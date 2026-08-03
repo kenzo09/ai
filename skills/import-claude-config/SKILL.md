@@ -3,50 +3,50 @@ name: import-claude-config
 description: Use when the user gives a public GitHub repo URL and wants its .claude/ config (skills, agents, hooks, rules, CLAUDE.md) installed or merged into the current project
 ---
 
-# Importing Claude Config From GitHub
+# Importando Config do Claude a Partir do GitHub
 
-## Overview
+## Visão Geral
 
-Fetches the `.claude/` directory tree from a public GitHub repo via the GitHub REST API (no `git clone`, no local git history pulled) and reports each file as NEW, CONFLICT, or IDENTICAL against the current project's `.claude/`. You then apply the changes, asking the user before overwriting anything.
+Busca a árvore do diretório `.claude/` de um repositório público do GitHub via GitHub REST API (sem `git clone`, sem baixar histórico git local) e reporta cada arquivo como NEW, CONFLICT ou IDENTICAL comparando com o `.claude/` do projeto atual. Você então aplica as mudanças, perguntando ao usuário antes de sobrescrever qualquer coisa.
 
-The scripts are pure-Python stdlib (`urllib`, no `curl`/`bash`/`mktemp` dependency) so they run the same way on Linux, macOS, and Windows — anywhere `python3` (or `python` on Windows if `python3` isn't on PATH) is available.
+Os scripts usam apenas a stdlib do Python (`urllib`, sem dependência de `curl`/`bash`/`mktemp`), então rodam da mesma forma em Linux, macOS e Windows — em qualquer lugar onde `python3` (ou `python` no Windows, se `python3` não estiver no PATH) esteja disponível.
 
-The script never writes into the real `.claude/` directory itself — it only downloads to a temp staging dir and reports. Copying into place is a separate, deliberate step so conflicts are never silently overwritten.
+O script nunca escreve dentro do diretório `.claude/` real — ele só baixa para um diretório temporário de staging e reporta. Copiar para o lugar definitivo é um passo separado e deliberado, para que conflitos nunca sejam sobrescritos silenciosamente.
 
-## When to Use
+## Quando Usar
 
-- User pastes/names a public GitHub repo ("owner/repo" or a full URL) and asks to pull in its skills, agents, hooks, rules, or CLAUDE.md.
-- User wants to sync/update an existing local `.claude/` setup from a repo they follow.
+- O usuário cola/nomeia um repositório público do GitHub ("owner/repo" ou URL completa) e pede para trazer as skills, agents, hooks, rules ou CLAUDE.md dele.
+- O usuário quer sincronizar/atualizar um setup `.claude/` local existente a partir de um repositório que acompanha.
 
-Not for: private repos requiring auth beyond a personal `GITHUB_TOKEN`, or repos that don't use the `.claude/` layout at all (see Non-standard layouts below).
+Não serve para: repositórios privados que exigem auth além de um `GITHUB_TOKEN` pessoal, ou repositórios que não usam o layout `.claude/` (veja Layouts fora do padrão abaixo).
 
 ## Workflow
 
-1. **Parse the input.** Normalize to `owner/repo`. Strip `https://github.com/` if given a full URL. Ask the user only if the repo string is genuinely ambiguous.
+1. **Interprete a entrada.** Normalize para `owner/repo`. Remova `https://github.com/` se receber a URL completa. Pergunte ao usuário apenas se a string do repositório for genuinamente ambígua.
 
-2. **List what's available before downloading anything:**
+2. **Liste o que está disponível antes de baixar qualquer coisa:**
    ```
    python3 ~/.claude/skills/import-claude-config/scripts/list_claude_tree.py <owner/repo> [ref] [subpath]
    ```
-   (use `python` instead of `python3` if that's what resolves on the current machine, e.g. some Windows setups)
-   - `ref` — leave empty (`""`) to auto-resolve the repo's default branch.
-   - `subpath` — defaults to `.claude`, which normally covers CLAUDE.md, skills/, agents/, hooks/, and rules/ in one listing (they all nest under it in the standard layout).
+   (use `python` em vez de `python3` se for o que resolve na máquina atual, ex.: alguns setups Windows)
+   - `ref` — deixe vazio (`""`) para resolver automaticamente a branch default do repositório.
+   - `subpath` — default é `.claude`, que normalmente cobre CLAUDE.md, skills/, agents/, hooks/ e rules/ numa listagem só (todos ficam aninhados abaixo dele no layout padrão).
 
-   This prints each top-level entry under the subpath (e.g. `DIR .claude/skills/ (7 files)`) with its immediate children indented (e.g. individual skill names, agent files). If it reports "No files found", see Non-standard layouts below.
+   Isso imprime cada entrada de primeiro nível abaixo do subpath (ex.: `DIR .claude/skills/ (7 files)`) com os filhos imediatos indentados (ex.: nomes individuais de skills, arquivos de agents). Se reportar "No files found", veja Layouts fora do padrão abaixo.
 
-3. **Ask the user what to import** — everything, or specific entries from the listing (e.g. "só as skills `foo` e `bar`, e o CLAUDE.md" vs "tudo"). Don't assume "import everything" by default; the listing exists so the user can pick.
+3. **Pergunte ao usuário o que importar** — tudo, ou entradas específicas da listagem (ex.: "só as skills `foo` e `bar`, e o CLAUDE.md" vs "tudo"). Não assuma "importar tudo" por default; a listagem existe justamente para o usuário escolher.
 
-4. **Run the fetch script with the selected paths:**
+4. **Rode o script de fetch com os paths selecionados:**
    ```
    python3 ~/.claude/skills/import-claude-config/scripts/fetch_claude_config.py <owner/repo> [ref] [root_subpath] [target_dir] [selected...]
    ```
-   - `root_subpath` — same value used for `subpath` in step 2 (default `.claude`).
-   - `target_dir` — defaults to `./.claude` (the current project). Run from the project root.
-   - `selected...` — one or more paths from the listing the user chose (e.g. `.claude/skills/foo .claude/CLAUDE.md`). Omit entirely to import everything under `root_subpath`.
+   - `root_subpath` — mesmo valor usado em `subpath` no passo 2 (default `.claude`).
+   - `target_dir` — default é `./.claude` (o projeto atual). Rode a partir da raiz do projeto.
+   - `selected...` — um ou mais paths da listagem que o usuário escolheu (ex.: `.claude/skills/foo .claude/CLAUDE.md`). Omita completamente para importar tudo abaixo de `root_subpath`.
 
-   Set `GITHUB_TOKEN` in the environment first if you hit GitHub's unauthenticated rate limit (60 req/hr).
+   Defina `GITHUB_TOKEN` no ambiente antes se bater no rate limit não autenticado do GitHub (60 req/h).
 
-5. **Read the report.** Output ends with lines like:
+5. **Leia o relatório.** A saída termina com linhas como:
    ```
    NEW       skills/foo/SKILL.md
    CONFLICT  agents/bar.md
@@ -54,22 +54,22 @@ Not for: private repos requiring auth beyond a personal `GITHUB_TOKEN`, or repos
    STAGING_DIR=/tmp/tmp.XXXXXX
    ```
 
-6. **Apply NEW and IDENTICAL entries** by copying straight from `STAGING_DIR/.claude/<path>` to `target_dir/<path>` (IDENTICAL needs no copy, it's already the same). Use your file tools (read the staged file, write it to the target path) rather than a shell-specific copy command — this keeps the step working the same on any OS. No need to ask — there's nothing to lose.
+6. **Aplique as entradas NEW e IDENTICAL** copiando direto de `STAGING_DIR/.claude/<path>` para `target_dir/<path>` (IDENTICAL não precisa de cópia, já é igual). Use suas ferramentas de arquivo (leia o arquivo em staging, escreva no path de destino) em vez de um comando de cópia específico de shell — assim o passo funciona igual em qualquer SO. Não precisa perguntar — não há nada a perder.
 
-7. **For every CONFLICT, ask the user before touching it** — show the path and offer: overwrite with the remote version, keep the local version, or view a diff first (read both `STAGING_DIR/.claude/<path>` and `target_dir/<path>` and compare). Never batch-overwrite conflicts without a per-file (or explicit "overwrite all") confirmation.
+7. **Para todo CONFLICT, pergunte ao usuário antes de mexer** — mostre o path e ofereça: sobrescrever com a versão remota, manter a versão local, ou ver um diff primeiro (leia `STAGING_DIR/.claude/<path>` e `target_dir/<path>` e compare). Nunca sobrescreva conflitos em lote sem confirmação por arquivo (ou um "sobrescreve tudo" explícito).
 
-8. **Clean up:** delete `STAGING_DIR` once everything is applied (it's an OS temp directory either way — safe to leave if deletion is inconvenient on the current platform).
+8. **Limpeza:** delete `STAGING_DIR` depois que tudo for aplicado (é um diretório temporário do SO de qualquer forma — seguro deixar se deletar for inconveniente na plataforma atual).
 
-## Non-standard layouts
+## Layouts fora do padrão
 
-If step 2 reports "No files found under .claude/" the source repo may not use the standard layout (e.g., top-level `skills/`, `hooks/` instead of nested under `.claude/`). Don't guess — ask the user which subpath(s) to fetch, then re-run the script once per subpath with a matching `target_dir` (e.g. `subpath=skills`, `target_dir=.claude/skills`).
+Se o passo 2 reportar "No files found under .claude/", o repositório de origem pode não usar o layout padrão (ex.: `skills/`, `hooks/` no nível raiz em vez de aninhados sob `.claude/`). Não adivinhe — pergunte ao usuário qual(is) subpath(s) buscar, então rode o script uma vez por subpath com um `target_dir` correspondente (ex.: `subpath=skills`, `target_dir=.claude/skills`).
 
-## Common Mistakes
+## Erros Comuns
 
-| Mistake | Why it's wrong |
+| Erro | Por que está errado |
 |---|---|
-| Using `git clone` instead of the script | Pulls full history and everything else in the repo; the script fetches only the relevant subtree via the GitHub API + raw file URLs. |
-| Running fetch directly without listing first | Skips the user's chance to pick a subset; always run `list_claude_tree.py` and ask before `fetch_claude_config.py`. |
-| Overwriting CONFLICT files automatically | Destroys local edits with no way back locally. Always ask first. |
-| Assuming a `.claude/` folder exists | Some repos use their own layout (see Non-standard layouts) — check the script's output before assuming. |
-| Forgetting to clean up `STAGING_DIR` | Leaves temp dirs behind; delete it after applying changes (it lives under the OS temp dir, so leaving it isn't harmful, just untidy). |
+| Usar `git clone` em vez do script | Baixa o histórico completo e tudo mais do repositório; o script busca só a subárvore relevante via GitHub API + URLs raw dos arquivos. |
+| Rodar o fetch direto, sem listar primeiro | Tira do usuário a chance de escolher um subconjunto; sempre rode `list_claude_tree.py` e pergunte antes do `fetch_claude_config.py`. |
+| Sobrescrever arquivos CONFLICT automaticamente | Destrói edições locais sem volta. Sempre pergunte primeiro. |
+| Assumir que existe uma pasta `.claude/` | Alguns repositórios usam layout próprio (veja Layouts fora do padrão) — confira a saída do script antes de assumir. |
+| Esquecer de limpar o `STAGING_DIR` | Deixa diretórios temporários para trás; delete depois de aplicar as mudanças (fica no temp do SO, então deixar não é danoso, só desleixo). |
