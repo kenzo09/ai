@@ -19,4 +19,4 @@ O teste: se alguém lesse só a doc hoje, ela bateria com o que o sistema faz de
 
 ## Como
 
-Use a skill `live-docs` para decidir qual artefato criar ou atualizar (PRD, ADR, BDD, reference) e onde ele mora.
+Use a skill `live-docs` para decidir qual artefato criar ou atualizar (arquitetura, PRD, BDD, reference, ADR) e onde ele mora. Para focar num tipo só, passe o tipo como argumento: `live-docs bdd`.

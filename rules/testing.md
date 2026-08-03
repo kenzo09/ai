@@ -23,6 +23,6 @@ Cenário BDD documentado é critério de aceite, não texto decorativo. Se não 
 - **FAÇA**: Se cenário e teste divergem, decida qual está errado antes de "consertar" qualquer um dos dois — pode ser doc desatualizada ou pode ser bug.
 - **NÃO FAÇA**: Documentar cenário de comportamento que você não pretende cobrir com teste — se não vale um teste, não vale um cenário.
 
-Use a skill `bdd-docs` para a convenção de rastreabilidade entre cenário e teste.
+Use a skill `live-docs bdd` para a convenção de rastreabilidade entre cenário e teste.
 
 O teste: cada teste deve responder "o que quebra, do ponto de vista do produto, se essa lógica falhar?". Se a resposta é "nada perceptível", o teste não paga o custo de manutenção.

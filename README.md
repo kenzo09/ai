@@ -41,8 +41,7 @@ Todos seguem o mesmo protocolo: entrevistam o desenvolvedor antes de gerar o art
 | Skill | Quando usar |
 |---|---|
 | `import-claude-config` | Puxar o `.claude/` de um repo público do GitHub (skills, agents, rules, CLAUDE.md) pro projeto atual |
-| `bdd-docs` | Documentar comportamentos observáveis em BDD sempre que uma regra de negócio, autorização ou fluxo técnico muda |
-| `live-docs` | Converter specs/plans/issues em documentação viva (PRD, ADR, BDD, reference) fiel ao código atual, não à intenção original |
+| `live-docs` | Skill central de documentação: converte specs/plans/issues em doc viva fiel ao código atual. Guidelines por tipo em `references/` (architecture, prd, bdd, reference, adr). Aceita argumento pra focar num tipo: `/live-docs architecture` |
 
 ## CLAUDE.md
 

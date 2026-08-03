@@ -1,11 +1,4 @@
----
-name: arch-docs
-description: Use when a repository lacks a single macro architecture document, when someone new needs one page showing actors, internal components and external dependencies, or when an existing architecture overview may have drifted from the current code.
----
-
-# Documentação de Arquitetura Macro
-
-## Visão Geral
+# Guideline: Arquitetura Macro
 
 Produz **um artefato**: `docs/architecture/overview.md` — o sistema inteiro em uma página, um diagrama mais o mínimo de
 texto ao redor.
@@ -13,18 +6,15 @@ texto ao redor.
 **Princípio central:** toda aresta do diagrama e toda linha das tabelas sai de uma leitura do código. Integração que
 você não encontrou no código não entra no desenho.
 
-Este doc responde "o que é este sistema e de quem ele depende". Não responde "como implementar X" — isso é referência
-técnica, outro artefato.
+Este doc responde "o que é este sistema e de quem ele depende". Não responde "como implementar X" — isso é
+`reference.md`. Não registra decisão — isso é ADR. Não descreve comportamento observável — isso é BDD.
 
-## Quando Usar
+## Quando rodar
 
 - O repositório não tem nenhuma visão macro do sistema
 - Alguém precisa entender o sistema inteiro sem ler o código
 - Uma nova integração externa, um novo datastore ou um novo ponto de entrada foi adicionado
 - Suspeita de que o overview existente descreve um sistema que já não é o atual
-
-**Não use para:** detalhar um módulo (isso é referência), registrar uma decisão (isso é ADR), ou descrever
-comportamento observável (isso é BDD).
 
 ## Criar vs Atualizar
 
@@ -83,7 +73,7 @@ Nesta ordem, sem seções a mais nem a menos (seções extras só ao atualizar u
 4. **Fluxo principal** — o caminho mais comum, em bloco de texto curto
 5. **Dependências e o que acontece quando falham** — tabela de criticidade e comportamento na falha
 6. **Pontos de atenção** — restrições e invariantes não óbvias que quebram o sistema quando violadas
-7. **Links** — para os docs de detalhe
+7. **Links** — para os docs de detalhe (`docs/features/<modulo>/`, `docs/adrs/`)
 
 ## Template
 
@@ -192,14 +182,3 @@ O doc inteiro cabe em uma leitura de poucos minutos. Ele aponta para o detalhe, 
 | Detalhar um componente a ponto de se tornar doc de módulo | Isso é referência técnica, outro artefato |
 | Reescrever o doc inteiro numa atualização | Corrija o que divergiu, preserve o resto |
 | Diagrama com 30 nós | Agrupe ou desça de nível |
-
-## Integração com outros docs
-
-Este artefato é o topo. Abaixo dele:
-
-- **Referência técnica** — contratos, config, pontos de manutenção
-- **ADR** — por que uma decisão foi tomada
-- **BDD** — comportamento observável
-
-Ao criar ou atualizar o overview, adicione-o ao índice de documentação do repositório. Se o repositório usa a skill
-`live-docs`, ela é quem organiza o resto da estrutura.

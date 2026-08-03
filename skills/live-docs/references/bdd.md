@@ -1,15 +1,9 @@
----
-name: bdd-docs
-description: Use when a behavior is added, modified, or removed — whether business logic, authorization rules, API contracts, or core technical flows. Also use when reviewing whether existing BDD docs reflect the current system after a code change.
----
+# Guideline: BDD
 
-# Documentação BDD
+Documente comportamentos observáveis do sistema como cenários BDD em `docs/features/<modulo>/bdd.md`. Cenários
+descrevem o que o sistema faz visto de fora — não como faz internamente.
 
-## Visão Geral
-
-Documente comportamentos observáveis do sistema como cenários BDD em `docs/bdd/`. Um arquivo por unidade de comportamento (componente, fluxo ou domínio). Cenários descrevem o que o sistema faz visto de fora — não como faz internamente.
-
-## Quando Usar
+## Quando rodar
 
 Crie ou atualize um doc BDD sempre que:
 - Uma regra de negócio é introduzida ou muda
@@ -17,7 +11,8 @@ Crie ou atualize um doc BDD sempre que:
 - Um fluxo técnico transversal (auth, multi-tenancy, pipeline de importação) muda
 - Uma nova área de domínio é introduzida
 
-**Quando NÃO usar:** CRUD rotineiro sem invariantes ou regras especiais. Se todo campo é opcional e qualquer valor é aceito, não há nada comportamental a documentar.
+**Quando NÃO usar:** CRUD rotineiro sem invariantes ou regras especiais. Se todo campo é opcional e qualquer valor é
+aceito, não há nada comportamental a documentar.
 
 ## O Que Documentar
 
@@ -37,20 +32,25 @@ Dois tipos de conteúdo pertencem aos docs BDD:
 
 ## Organização de Arquivos
 
+Um `bdd.md` por módulo, dentro da pasta do módulo:
+
 ```
-docs/bdd/
-  auth-middleware.md          # Domínio em arquivo único
-  school-resolution.md
-  student-management.md
-  payments/                   # Pasta quando um domínio tem 3+ arquivos distintos
-    checkout.md
-    refunds.md
-    subscription-billing.md
+docs/features/
+  auth/
+    bdd.md
+  school-resolution/
+    bdd.md
+  payments/
+    bdd.md                    # arquivo único enquanto couber
+    bdd/                      # vira pasta quando passa de 3 unidades distintas
+      checkout.md
+      refunds.md
+      subscription-billing.md
 ```
 
-**Use uma pasta quando** um domínio cresce para 3 arquivos ou mais. Nomeie a pasta com o nome do domínio (`payments/`, `notifications/`, `access-control/`). Mantenha os arquivos internos nomeados pelo comportamento específico (`checkout.md`, não `payments-checkout.md` — a pasta já fornece o namespace).
-
-**Um arquivo por unidade de comportamento.** Divida quando um arquivo cobre dois conceitos distintos que um dev consultaria de forma independente. Junte quando os cenários são finos demais para existirem sozinhos.
+**Quebre em `bdd/` quando** o módulo cresce para 3 ou mais unidades de comportamento que um dev consultaria de forma
+independente. Nomeie os arquivos internos pelo comportamento específico (`checkout.md`, não `payments-checkout.md` — a
+pasta já fornece o namespace). Junte quando os cenários são finos demais para existirem sozinhos.
 
 ## Estrutura Canônica
 
@@ -94,6 +94,8 @@ Texto descrevendo o comportamento. Declare regras invariantes aqui.
 | Tom | Objetivo, sem jargão. Legível sem conhecer o código |
 | Escopo | Comportamento observável externamente — sem detalhes de implementação |
 
+Use o idioma do projeto: Dado/Quando/Então ou Given/When/Then, nunca misturados.
+
 ## Exemplo Canônico
 
 ```markdown
@@ -118,20 +120,24 @@ O número de matrícula é único por escola, não globalmente. O mesmo número 
 
 ## Rastreabilidade Cenário ↔ Teste
 
-Todo cenário documentado tem um teste que o exercita. Um cenário sem teste é uma afirmação não verificada sobre o sistema.
+Todo cenário documentado tem um teste que o exercita. Um cenário sem teste é uma afirmação não verificada sobre o
+sistema.
 
 **Convenção:** o nome do teste repete o nome do cenário, e o arquivo/suíte de teste corresponde ao arquivo BDD.
 
 ```
-docs/bdd/student-management.md   →  suíte "Student Management"
+docs/features/student-management/bdd.md   →  suíte "Student Management"
   #### Cenário: Matrícula duplicada na mesma escola
                     ↓
   it("matrícula duplicada na mesma escola", ...)
 ```
 
-Se o projeto já tem outra convenção de nomes de teste, siga a do projeto — o que importa é que dê para ir do cenário ao teste (e vice-versa) sem adivinhar. Ferramenta de BDD executável (Cucumber, Behave, SpecFlow) é opcional: teste comum com nome espelhado cumpre o papel.
+Se o projeto já tem outra convenção de nomes de teste, siga a do projeto — o que importa é que dê para ir do cenário ao
+teste (e vice-versa) sem adivinhar. Ferramenta de BDD executável (Cucumber, Behave, SpecFlow) é opcional: teste comum
+com nome espelhado cumpre o papel.
 
-O teste deve seguir a estrutura do cenário: `Dado` → setup, `Quando` → a ação, `Então`/`E` → as asserções. Uma asserção por `Então`/`E`.
+O teste deve seguir a estrutura do cenário: `Dado` → setup, `Quando` → a ação, `Então`/`E` → as asserções. Uma
+asserção por `Então`/`E`.
 
 ### Ao validar doc contra teste
 
@@ -144,7 +150,8 @@ Percorra o arquivo BDD e, para cada cenário, localize o teste:
 | Cenário e teste discordam | Verifique o comportamento real no código antes de mudar qualquer um dos dois |
 | Cenário que ninguém pretende testar | Remova o cenário — o BDD documenta comportamento verificável, não intenção |
 
-**Nunca** ajuste o teste para passar sem antes decidir qual lado está errado. Um teste alinhado a uma doc errada só torna o erro permanente.
+**Nunca** ajuste o teste para passar sem antes decidir qual lado está errado. Um teste alinhado a uma doc errada só
+torna o erro permanente.
 
 ## Mantendo os Docs Atualizados
 

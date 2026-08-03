@@ -1,22 +1,57 @@
 ---
 name: live-docs
-description: Use when an implementation plan finishes, when auditing whether existing docs reflect the current codebase, or when retroactively migrating planning artifacts (specs, plans, issues, PRs) into structured documentation.
+description: Central documentation skill. Use when an implementation plan finishes, when an observable behavior changes (business rule, authorization, API contract, technical flow), when an architectural decision is made, when a contract or env var changes, when the repository lacks a macro view of the system, when auditing whether existing docs reflect the current codebase, or when migrating planning artifacts (specs, plans, issues, PRs) into structured documentation. Triggers on requests like "document this feature", "update the docs", "write the BDD for this", "record this decision as an ADR", "generate the architecture overview", "are the docs stale?", "migrate these specs into docs" — and proactively after completing any change to observable behavior, even with no explicit request for documentation. Accepts a doc type as argument to focus on a single artifact.
+argument-hint: "[architecture|bdd|prd|adr|reference]"
 ---
 
 # Documentação Viva
 
-## Visão Geral
+Converte artefatos de planejamento (specs, planos, issues, PRs) em documentação estruturada e viva, fiel ao código
+atual — não à intenção original do design.
 
-Converte artefatos de planejamento (specs, planos, issues, PRs) em documentação estruturada e viva, fiel ao código atual — não à intenção original do design.
+**Princípio central:** docs descrevem o que o sistema *faz*, verificado no código. Descarte qualquer coisa que a spec
+planejou mas o código não entregou.
 
-**Princípio central:** Docs descrevem o que o sistema *faz*, verificado no código. Descarte qualquer coisa que a spec planejou mas o código não entregou.
+## Argumento: escopo por tipo
+
+`ARGUMENTS: $ARGUMENTS`
+
+| Argumento | O que fazer |
+|-----------|-------------|
+| vazio | **Todos os cinco tipos.** Percorra a documentação como um todo, sem escolher tipo por conta própria |
+| `architecture` | Só `docs/architecture/overview.md` |
+| `bdd` | Só os `bdd.md` dos módulos afetados |
+| `prd` | Só os `prd.md` dos módulos afetados |
+| `adr` | Só os ADRs das decisões não-óbvias |
+| `reference` | Só os `reference.md` dos módulos afetados |
+
+**Sem argumento:** a doc inteira está no escopo. Passe pelos cinco tipos na ordem `architecture` → `prd` → `bdd` →
+`reference` → `adr` e, para **cada um**, tome uma decisão explícita: criar, atualizar ou nada a fazer. Nenhum tipo é
+pulado em silêncio — "nada a fazer" é uma conclusão que você registra, não uma omissão. Ao terminar, relate uma linha
+por tipo com o que aconteceu.
+
+**Com um tipo nomeado:** carregue **apenas** o guideline daquele tipo e ignore os demais artefatos — inclusive não crie
+docs de outros tipos "de brinde". Argumento não reconhecido: trate como vazio e avise em uma linha.
+
+## Guidelines por tipo
+
+Cada tipo tem template, regras e erros comuns em um arquivo próprio. Leia o do tipo que vai escrever, na hora de
+escrever:
+
+| Tipo | Onde mora | Guideline |
+|------|-----------|-----------|
+| Arquitetura | `docs/architecture/overview.md` | [references/architecture.md](references/architecture.md) |
+| PRD | `docs/features/<modulo>/prd.md` | [references/prd.md](references/prd.md) |
+| BDD | `docs/features/<modulo>/bdd.md` | [references/bdd.md](references/bdd.md) |
+| Reference | `docs/features/<modulo>/reference.md` | [references/reference.md](references/reference.md) |
+| ADR | `docs/adrs/NNN-<titulo>.md` | [references/adr.md](references/adr.md) |
 
 ## Estrutura de Pastas
 
 ```
 docs/
   architecture/
-    overview.md                   # Visão macro do sistema (skill arch-docs)
+    overview.md                   # Visão macro do sistema — o topo da documentação
   adrs/
     NNN-<titulo>.md               # Um ADR por decisão arquitetural
   features/
@@ -27,61 +62,8 @@ docs/
       <outro>.md                  # Qualquer doc adicional (diagramas, runbook, etc.)
 ```
 
-**Nomes de módulo** mapeiam o domínio de negócio, não o pacote/diretório de código. Descubra os módulos lendo o código — não assuma nomes.
-
-## Tipos de Doc
-
-### PRD (Product Requirements Doc)
-**Propósito:** Por que esta feature existe? Quem usa? Que problema resolve?
-**Audiência:** PMs, novatos, não-engenheiros
-
-```markdown
-# <Feature> — PRD
-
-## Objetivo
-Um parágrafo: o problema sendo resolvido.
-
-## Usuários
-Quem se beneficia e como.
-
-## Escopo
-O que está no escopo. O que está explicitamente fora.
-
-## Comportamentos-chave
-Lista com os 3–7 comportamentos mais importantes do ponto de vista de negócio.
-```
-
-### ADR (Architecture Decision Record)
-**Propósito:** Documentar *por que* uma decisão arquitetural não-óbvia foi tomada.
-**Criar apenas quando:** A decisão tem tradeoffs reais e mantenedores futuros questionariam.
-**Numeração:** Inteiros sequenciais, zero-padded em 3 dígitos (`001`, `002`, …).
-
-```markdown
-# ADR-NNN: <Título>
-
-**Status:** Aceito | Supersedido por ADR-XXX
-**Data:** YYYY-MM-DD
-**Feature:** <módulo>
-
-## Contexto
-Que situação forçou esta decisão?
-
-## Decisão
-O que foi decidido.
-
-## Consequências
-O que isso habilita, o que previne, o que dificulta.
-```
-
-### Arquitetura (Overview)
-**Use a skill `arch-docs`.** Um artefato por repositório, em `docs/architecture/overview.md`: atores, componentes internos, dependências externas e comportamento na falha. Cria se não existe; atualiza se existe. É o topo da documentação — aponta para os demais artefatos, não os duplica.
-
-### BDD
-**Use a skill `bdd-docs`.** Siga o formato Dado/Quando/Então (ou Given/When/Then — use o idioma do projeto). Cenários descrevem comportamento externamente observável, nunca internals.
-
-### Reference
-**Propósito:** Contratos que desenvolvedores dependem — endpoints, env vars, códigos de erro.
-**Mantenha:** Curto, escaneável, verificado contra o código atual.
+**Nomes de módulo** mapeiam o domínio de negócio, não o pacote/diretório de código. Descubra os módulos lendo o
+código — não assuma nomes.
 
 ## Processo
 
@@ -91,7 +73,7 @@ flowchart TD
     A -- sim --> B[Ler artefatos de planejamento]
     A -- não --> C{Auditoria / migração retroativa?}
     C -- sim --> D[Localizar artefatos existentes]
-    D --> E[Cruzar com docs/ e adrs/ existentes]
+    D --> E[Cruzar com docs/ existentes]
     E --> F[Verificar contra o código]
     B --> G[Identificar módulos afetados]
     G --> F
@@ -110,38 +92,38 @@ Para migração retroativa: processe em ordem cronológica. Artefatos mais recen
 
 ### Passo 2: Verificar contra o código
 
-**Crítico:** O artefato de planejamento descreve intenção; o código é a verdade.
+**Crítico:** o artefato de planejamento descreve intenção; o código é a verdade.
 
 - Para cada afirmação, verifique se corresponde ao código atual
 - Descarte decisões que foram alteradas ou nunca implementadas
 - Use os nomes atuais do código (pacotes, env vars, endpoints) — não os da spec
-- Env vars: verifique nos arquivos de configuração do projeto (`.env`, `CLAUDE.md`, `README`, etc.)
 
-### Passo 3: Identificar módulos e decisões afetados
+### Passo 3: Identificar o que foi afetado
 
 Da fonte, liste:
 - Quais módulos de domínio foram criados ou modificados
 - Quais decisões arquiteturais foram tomadas (apenas tradeoffs não-óbvios)
+- Se a mudança tocou um ponto de entrada, uma integração externa, um datastore ou o comportamento na falha de
+  alguma dependência — nesse caso o overview de arquitetura entra na lista
 
 ### Passo 4: Criar ou atualizar docs
 
-Comece pelo topo: `docs/architecture/overview.md` — **use a skill `arch-docs`**. Rode sempre que a mudança tocar um
-ponto de entrada, uma integração externa, um datastore ou o comportamento na falha de alguma dependência. Se o
-artefato não existe, a skill cria; se existe, atualiza.
+Comece pelo topo: `docs/architecture/overview.md`. Se o artefato não existe, crie; se existe, atualize o que divergiu.
 
-Depois, para cada módulo afetado:
-- `prd.md` — criar se módulo é novo; atualizar escopo se feature expandiu
-- `bdd.md` — adicionar/atualizar/remover cenários para corresponder ao código (use skill bdd-docs)
-- `reference.md` — atualizar contratos de API, env vars, códigos de erro
-- ADRs — um por decisão não-óbvia, não já documentada
+Depois, para cada módulo afetado, na ordem: `prd.md` → `bdd.md` → `reference.md` → ADRs.
 
-**Nunca:** modificar os artefatos de planejamento originais (specs, planos, issues) — são fonte histórica, não docs de produto.
+Para cada artefato, leia o guideline correspondente na tabela acima antes de escrever.
 
-**Nunca:** criar links de docs para artefatos de planejamento que possam estar ausentes no repositório (gitignored, externos, efêmeros).
+**Nunca:** modificar os artefatos de planejamento originais (specs, planos, issues) — são fonte histórica, não docs de
+produto.
+
+**Nunca:** criar links de docs para artefatos de planejamento que possam estar ausentes no repositório (gitignored,
+externos, efêmeros).
 
 ### Passo 5: Atualizar o índice de docs
 
-Encontre o índice de documentação do projeto (normalmente `docs/README.md` ou `docs/index.md`). Adicione novos arquivos, remova referências a docs deletados, mantenha a seção de ADRs atualizada.
+Encontre o índice de documentação do projeto (normalmente `docs/README.md` ou `docs/index.md`). Adicione novos
+arquivos, remova referências a docs deletados, mantenha a seção de ADRs atualizada.
 
 ## Migração Retroativa
 
@@ -152,7 +134,7 @@ Quando invocado para auditar ou migrar documentação existente:
 3. Cruze com `docs/architecture/`, `docs/features/` e `docs/adrs/` existentes
 4. Para cada lacuna (conteúdo da spec ausente nos docs), verifique no código e escreva o doc
 5. Para cada doc que contradiz o código atual, atualize
-6. Se não há visão macro do sistema, rode a skill `arch-docs` — sem ela o leitor não tem por onde começar
+6. Se não há visão macro do sistema, comece por ela — sem o overview o leitor não tem por onde começar
 
 **Descarte da spec se:**
 - O código não implementa
@@ -164,22 +146,20 @@ Quando invocado para auditar ou migrar documentação existente:
 | Regra | Por quê |
 |-------|---------|
 | Idioma dos docs = idioma do projeto | Consistência para a audiência real |
-| Reference verificado contra o código | Previne divergência entre doc e código |
-| Um ADR por decisão, não por spec | ADRs respondem "por quê?", não "o que planejamos?" |
-| Cenários BDD = externamente observáveis | Nunca descreva internals de implementação |
-| PRD sem referências a código | Audiência do PRD é não-técnica |
+| Toda afirmação verificada contra o código | Previne divergência entre doc e código |
 | Nomes sempre dos atuais no código | Artefatos antigos usam nomes desatualizados |
+| Um artefato por responsabilidade | Cada tipo responde uma pergunta; sobreposição gera doc duplicada e divergente |
 | Docs nunca linkam artefatos efêmeros | Links quebrados degradam a confiança na doc |
+| Atualização preserva o que já está correto | Reescrever o doc inteiro perde contribuições de terceiros |
 
 ## Erros Comuns
 
 | Erro | Correção |
 |------|----------|
 | Copiar spec verbatim para docs | Verificar primeiro; descartar o que o código não entregou |
-| Criar ADR para toda spec | Apenas decisões não-óbvias com tradeoffs reais |
 | Usar nomes da spec (pacotes, env vars, paths) | Verificar nomes reais no código |
-| Reference listando env vars desatualizadas | Verificar nomes nos arquivos de config do projeto |
-| Ignorar PRD para módulo novo | Todo módulo novo ganha PRD |
-| Documentar features sem nenhuma visão macro | Rode `arch-docs` — o overview é a porta de entrada dos demais docs |
+| Escrever um artefato sem ler o guideline dele | Cada tipo tem template e regras próprias em `references/` |
+| Documentar features sem nenhuma visão macro | O overview é a porta de entrada dos demais docs |
+| Criar docs de outros tipos quando um tipo foi pedido no argumento | Respeite o escopo do argumento |
 | Não atualizar o índice de docs | Índice deve refletir todos os docs existentes |
 | Linkar para artefatos gitignored/externos | Docs devem ser auto-contidos no repositório |
