@@ -109,24 +109,31 @@ def main():
     if tree.get("truncated"):
         print("WARNING: repo tree was truncated by the GitHub API (very large repo) - some files may be missing", file=sys.stderr)
 
-    paths = [
-        entry["path"]
+    blobs = [
+        entry
         for entry in tree.get("tree", [])
         if entry.get("type") == "blob"
         and under(entry.get("path", ""), root)
         and any(under(entry["path"], sel) for sel in selected)
     ]
+    paths = [entry["path"] for entry in blobs]
 
     if not paths:
         print(f"No files found under the selected path(s) in {repo}@{ref}: {' '.join(selected)}", file=sys.stderr)
         shutil.rmtree(staging, ignore_errors=True)
         sys.exit(1)
 
-    for p in paths:
+    for entry in blobs:
+        p = entry["path"]
         dest = staging / p
         dest.parent.mkdir(parents=True, exist_ok=True)
         raw_url = f"https://raw.githubusercontent.com/{repo}/{ref}/{p}"
         download(raw_url, dest)
+        # GitHub marks executables as mode 100755. write_bytes() creates 0644, which
+        # silently breaks an imported hook script on Linux/macOS. No-op on Windows,
+        # which has no exec bit - copy the file with shutil.copy (not copyfile) to keep it.
+        if entry.get("mode") == "100755" and os.name != "nt":
+            dest.chmod(dest.stat().st_mode | 0o111)
 
     print(f"Downloaded {len(paths)} file(s) from {repo}@{ref} (selected: {' '.join(selected)}) into {staging}")
     print()

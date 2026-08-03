@@ -64,7 +64,7 @@ Repos que não usam o layout `.claude/` **são suportados** — veja Layouts for
    | `EOL-ONLY` | Nada — mesmo conteúdo, só CRLF vs LF. Não é conflito, não pergunte, não copie. |
    | `CONFLICT` | Diferença real de conteúdo → passo 7. |
 
-6. **Copie só as entradas NEW**, de `STAGING_DIR/<root_subpath>/<path>` para `target_dir/<path>`. Não precisa perguntar — não há nada a perder. Use qualquer cópia da stdlib (ex.: `shutil.copyfile` num `python -c`) ou suas ferramentas de arquivo; o que não serve é comando de cópia específico de shell (`cp`, `copy`, `robocopy`), que quebra a portabilidade entre SOs. Para arquivos grandes prefira a cópia via stdlib a ler+escrever, que gasta contexto sem motivo.
+6. **Copie só as entradas NEW**, de `STAGING_DIR/<root_subpath>/<path>` para `target_dir/<path>`. Não precisa perguntar — não há nada a perder. Use `shutil.copy` num `python -c` — **`copy`, não `copyfile`**: o `copyfile` descarta o bit de execução e um hook importado deixa de rodar no Linux/macOS. O que não serve é comando de cópia específico de shell (`cp`, `copy`, `robocopy`), que quebra a portabilidade entre SOs. Para arquivos grandes prefira a cópia via stdlib a ler+escrever, que gasta contexto sem motivo.
 
 7. **Para todo CONFLICT, pergunte ao usuário antes de mexer** — mostre o path e ofereça: sobrescrever com a versão remota, manter a versão local, mesclar as duas, ou ver um diff primeiro (compare `STAGING_DIR/<root_subpath>/<path>` com `target_dir/<path>`). Nunca sobrescreva conflitos em lote sem confirmação por arquivo (ou um "sobrescreve tudo" explícito). Mostre o diff junto da pergunta quando o arquivo for pequeno — poupa uma ida e volta.
 
