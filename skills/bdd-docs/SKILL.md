@@ -116,6 +116,36 @@ O número de matrícula é único por escola, não globalmente. O mesmo número 
 **Então** o cadastro é aceito normalmente
 ```
 
+## Rastreabilidade Cenário ↔ Teste
+
+Todo cenário documentado tem um teste que o exercita. Um cenário sem teste é uma afirmação não verificada sobre o sistema.
+
+**Convenção:** o nome do teste repete o nome do cenário, e o arquivo/suíte de teste corresponde ao arquivo BDD.
+
+```
+docs/bdd/student-management.md   →  suíte "Student Management"
+  #### Cenário: Matrícula duplicada na mesma escola
+                    ↓
+  it("matrícula duplicada na mesma escola", ...)
+```
+
+Se o projeto já tem outra convenção de nomes de teste, siga a do projeto — o que importa é que dê para ir do cenário ao teste (e vice-versa) sem adivinhar. Ferramenta de BDD executável (Cucumber, Behave, SpecFlow) é opcional: teste comum com nome espelhado cumpre o papel.
+
+O teste deve seguir a estrutura do cenário: `Dado` → setup, `Quando` → a ação, `Então`/`E` → as asserções. Uma asserção por `Então`/`E`.
+
+### Ao validar doc contra teste
+
+Percorra o arquivo BDD e, para cada cenário, localize o teste:
+
+| Situação | O que fazer |
+|---|---|
+| Cenário sem teste | Escreva o teste. Se ele falhar, o sistema não faz o que a doc afirma — decida se é bug ou doc desatualizada |
+| Teste sem cenário | Se cobre comportamento observável, documente o cenário; se cobre detalhe interno, deixe fora do BDD |
+| Cenário e teste discordam | Verifique o comportamento real no código antes de mudar qualquer um dos dois |
+| Cenário que ninguém pretende testar | Remova o cenário — o BDD documenta comportamento verificável, não intenção |
+
+**Nunca** ajuste o teste para passar sem antes decidir qual lado está errado. Um teste alinhado a uma doc errada só torna o erro permanente.
+
 ## Mantendo os Docs Atualizados
 
 Ao modificar qualquer comportamento, localize o cenário correspondente e:

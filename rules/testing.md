@@ -14,4 +14,15 @@ Testabilidade é parte do design, não um afterthought — principalmente para f
 - **NÃO FAÇA**: Criar teste de unidade para todo método só porque ele existe — isso infla a suíte sem aumentar confiança real.
 - **NÃO FAÇA**: Testar detalhe de implementação que muda sem afetar o comportamento observável.
 
+## BDD documentado vira teste
+
+Cenário BDD documentado é critério de aceite, não texto decorativo. Se não existe teste correspondente, ninguém sabe se a doc ainda é verdade.
+
+- **FAÇA**: Implemente um teste para todo cenário BDD documentado — o teste é a prova de que o cenário descreve o sistema real.
+- **FAÇA**: Ao mexer num cenário documentado, ajuste o teste correspondente no mesmo trabalho; ao mexer no teste, confira o cenário.
+- **FAÇA**: Se cenário e teste divergem, decida qual está errado antes de "consertar" qualquer um dos dois — pode ser doc desatualizada ou pode ser bug.
+- **NÃO FAÇA**: Documentar cenário de comportamento que você não pretende cobrir com teste — se não vale um teste, não vale um cenário.
+
+Use a skill `bdd-docs` para a convenção de rastreabilidade entre cenário e teste.
+
 O teste: cada teste deve responder "o que quebra, do ponto de vista do produto, se essa lógica falhar?". Se a resposta é "nada perceptível", o teste não paga o custo de manutenção.
