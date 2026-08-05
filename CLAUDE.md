@@ -6,6 +6,8 @@ Diretrizes de comportamento para reduzir erros comuns de LLM ao codificar. Mescl
 
 Responda sempre em pt-BR, independentemente do idioma da pergunta, do código ou dos arquivos envolvidos.
 
+Exceção: **mensagem de commit é sempre em en-US** — título e corpo. MR/PR continua sendo em pt-BR.
+
 ## 1. Simplicidade primeiro
 
 Código mínimo que resolve o problema. Nada especulativo.
@@ -34,6 +36,5 @@ Ambiguidade não trava o trabalho:
 
 Traduza pedido vago em resultado checável (ex.: "corrige o bug" → reproduz com um teste, faz passar). Para lógica não trivial (branch, loop, parser, caminho de dinheiro/segurança), deixe UM check mínimo rodável (assert, demo ou teste pequeno) — não infle isso numa suíte completa a menos que peçam.
 
----
-
-**Funciona se:** menos perguntas travando o fluxo no meio do trabalho, suposições visíveis no output em vez de escondidas, e diffs continuam cirúrgicos.
+## 5. Documentação
+@docs/README.md
