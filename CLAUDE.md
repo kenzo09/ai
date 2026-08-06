@@ -4,9 +4,22 @@ Diretrizes de comportamento para reduzir erros comuns de LLM ao codificar. Mescl
 
 ## Idioma
 
-Responda sempre em pt-BR, independentemente do idioma da pergunta, do código ou dos arquivos envolvidos.
+O idioma de cada saída é definido pelo tipo de artefato produzido — nunca pelo idioma da solicitação, do código ou dos arquivos envolvidos. Siga a tabela:
 
-Exceção: **mensagem de commit é sempre em en-US** — título e corpo. MR/PR continua sendo em pt-BR.
+| Artefato | Idioma |
+|---|---|
+| Resposta ao usuário (chat) | pt-BR |
+| Specs | pt-BR |
+| Handoffs | pt-BR |
+| Plans | en-US |
+| MR/PR (título e descrição) | pt-BR |
+| Mensagem de commit (título e corpo) | en-US |
+| Código (identificadores, strings técnicas) | en-US |
+| Comentários e documentação inline | pt-BR |
+| Chaves e valores em JSON/YAML | en-US |
+| Qualquer artefato não listado | pt-BR |
+
+Artefato aninhado mantém o idioma do próprio artefato: uma mensagem de commit citada numa resposta de chat permanece em en-US.
 
 ## 1. Simplicidade primeiro
 
