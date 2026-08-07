@@ -18,13 +18,30 @@ Testabilidade é parte do design, não um afterthought — principalmente para f
 
 Toda API ou página entregue vem com evidência visual do resultado rodando — foto ou vídeo. Quem roda é o agente, antes de dizer que terminou; a evidência é a prova, para quem pediu, de que o que foi solicitado existe e funciona. Sem evidência, a entrega é só uma afirmação.
 
-- **FAÇA**: Exercite o fluxo entregue no sistema real e capture o resultado. Use o MCP do Playwright como primeira opção — navegue, preencha, dispare a request, tire o screenshot ou grave o vídeo, leia rede e console.
-- **FAÇA**: Para API, a evidência é a chamada real: request e resposta com status e corpo. Para página, o estado final da tela.
+**O formato é imagem ou vídeo. Sempre — inclusive para API.** Se os arquivos entregues não incluem pelo menos
+um `.png`, `.jpg`, `.gif`, `.webm` ou `.mp4`, a evidência não foi produzida.
+
+**A ferramenta é livre; o formato não.** Swagger, Postman ou Insomnia, DevTools, Playwright disparando a
+requisição, ou o próprio terminal com `curl` — qualquer meio serve, desde que o resultado apareça numa
+captura. Um print do terminal mostrando o comando e a resposta é evidência tão válida quanto um print do
+Swagger. O que não é evidência é o mesmo conteúdo entregue **fora** de uma imagem: um `.json` salvo na pasta,
+um bloco de log colado na resposta, a saída transcrita.
+
+- **FAÇA**: Exercite o fluxo entregue no sistema real e capture o resultado. O MCP do Playwright é a primeira opção quando há tela — navegue, preencha, dispare a request, tire o screenshot ou grave o vídeo, leia rede e console. Para API, ele também serve para disparar a chamada e capturar o resultado.
+- **FAÇA**: Para API, a captura mostra a chamada real com o request e a resposta legíveis na imagem — o endpoint, o status, o corpo e a parte da resposta que prova o comportamento. Para página, o estado final da tela.
+- **FAÇA**: Escolha o meio que torne a captura mais legível para quem vai conferir, e o mais barato de operar. Se dirigir a UI está custando caro, um print do terminal resolve — o que não pode é o custo virar motivo para não haver imagem nenhuma.
 - **FAÇA**: Capture o caminho feliz e, quando o pedido envolve erro ou validação, também o caminho de erro.
-- **FAÇA**: Entregue a evidência junto do resultado, dizendo em uma linha o que cada captura prova. Grave os arquivos no próprio repositório, em `.evidence/` — pasta temporária e ignorada pelo git; se ainda não estiver no `.gitignore`, adicione.
+- **FAÇA**: Redija dado pessoal e segredo **antes** de capturar — nome, e-mail, documento, token, chave. Ambiente de desenvolvimento costuma responder com conta real, e o Swagger imprime o bearer inteiro no bloco `curl`. Redija na origem (no DOM, antes do screenshot), nunca depois: imagem não se edita com `sed`.
+- **FAÇA**: Antes de dizer que terminou, liste os arquivos de `.evidence/` e confirme que há imagem ou vídeo cobrindo cada caminho prometido. Essa conferência é a última coisa antes da entrega.
+- **FAÇA**: Ao delegar a captura, mande junto o formato exigido. Delegação não transfere a regra — se o subagente devolver só texto, a evidência continua não existindo, e quem entrega responde por isso.
+- **FAÇA**: Ao pedir revisão da entrega, inclua "existe imagem ou vídeo de cada caminho?" como item verificável. Critério que não entra no prompt do revisor não é conferido por ninguém.
 - **NÃO FAÇA**: Apresentar diff, log de build ou descrição do que foi feito como evidência — nada disso prova execução.
-- **NÃO FAÇA**: Entregar captura com erro no console ou request vermelha sem tratar — console limpo faz parte da prova.
+- **NÃO FAÇA**: Entregar corpo JSON salvo em arquivo, log de terminal ou saída transcrita **no lugar** da captura. Rodar `curl` é legítimo; entregar o texto dele sem o print não é. Esses arquivos são complemento, e complemento sozinho não prova execução.
+- **NÃO FAÇA**: Entregar captura com erro no console ou request vermelha sem tratar — console limpo faz parte da prova. Erro de recurso 4xx/5xx que o próprio teste provocou de propósito é esperado: aponte qual é e por quê.
 - **NÃO FAÇA**: Criar suíte E2E de Playwright onde a stack não comporta — a evidência é obrigatória, o spec automatizado não.
+
+Se capturar for de fato impossível no ambiente, isso é um bloqueio a declarar em voz alta junto da entrega —
+não uma licença para substituir o formato por texto e seguir como se a regra tivesse sido cumprida.
 
 ## BDD documentado vira teste
 
