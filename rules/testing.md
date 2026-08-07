@@ -14,6 +14,18 @@ Testabilidade é parte do design, não um afterthought — principalmente para f
 - **NÃO FAÇA**: Criar teste de unidade para todo método só porque ele existe — isso infla a suíte sem aumentar confiança real.
 - **NÃO FAÇA**: Testar detalhe de implementação que muda sem afetar o comportamento observável.
 
+## Evidência visual de execução
+
+Toda API ou página entregue vem com evidência visual do resultado rodando — foto ou vídeo. Quem roda é o agente, antes de dizer que terminou; a evidência é a prova, para quem pediu, de que o que foi solicitado existe e funciona. Sem evidência, a entrega é só uma afirmação.
+
+- **FAÇA**: Exercite o fluxo entregue no sistema real e capture o resultado. Use o MCP do Playwright como primeira opção — navegue, preencha, dispare a request, tire o screenshot ou grave o vídeo, leia rede e console.
+- **FAÇA**: Para API, a evidência é a chamada real: request e resposta com status e corpo. Para página, o estado final da tela.
+- **FAÇA**: Capture o caminho feliz e, quando o pedido envolve erro ou validação, também o caminho de erro.
+- **FAÇA**: Entregue a evidência junto do resultado, dizendo em uma linha o que cada captura prova. Grave os arquivos no próprio repositório, em `.evidence/` — pasta temporária e ignorada pelo git; se ainda não estiver no `.gitignore`, adicione.
+- **NÃO FAÇA**: Apresentar diff, log de build ou descrição do que foi feito como evidência — nada disso prova execução.
+- **NÃO FAÇA**: Entregar captura com erro no console ou request vermelha sem tratar — console limpo faz parte da prova.
+- **NÃO FAÇA**: Criar suíte E2E de Playwright onde a stack não comporta — a evidência é obrigatória, o spec automatizado não.
+
 ## BDD documentado vira teste
 
 Cenário BDD documentado é critério de aceite, não texto decorativo. Se não existe teste correspondente, ninguém sabe se a doc ainda é verdade.
