@@ -10,7 +10,7 @@ Um checkpoint agrupa **uma ou mais tarefas** levantadas na ideação/planejament
 
 - **Build passa** — compila, sobe, instala.
 - **Testes passam** — rodados pelo agente localmente e válidos também na CI/CD, sem depender de um checkpoint futuro.
-- **Nenhuma funcionalidade existente quebrada** — o que funcionava antes continua funcionando.
+- **Nenhuma quebra acidental** — refactor e evolução podem mudar comportamento de propósito; o que não pode é quebra por descuido nem migração pela metade. Se o comportamento muda, a mudança está completa dentro do checkpoint: chamadores, testes e doc ajustados junto, e a quebra declarada na mensagem de commit.
 - **Revertível isoladamente** — `git revert` do checkpoint devolve um sistema funcional, sem exigir revert de outros checkpoints.
 - **Validável manualmente** — existe algo concreto que o usuário que pediu a feature consegue exercitar e conferir (tela, endpoint, comando, log).
 
@@ -21,6 +21,17 @@ Se um dos cinco não se sustenta, o corte está no lugar errado: junte com o che
 - **FAÇA**: Agrupe as tarefas em checkpoints, na ordem em que serão implementados, cada um com o critério de validação manual explícito ("como o usuário confere que esse checkpoint está de pé").
 - **FAÇA**: Ordene para que os checkpoints iniciais já entreguem algo observável, em vez de deixar tudo visível só no último.
 - **NÃO FAÇA**: Criar checkpoint que só existe como etapa interna ("criar as interfaces", "adicionar a coluna") sem nada que o usuário possa validar — isso é tarefa dentro de um checkpoint, não um checkpoint.
+
+## Paralelismo
+
+Checkpoint é sequencial por definição — cada um precisa ser um estado funcional revertível. Dentro do checkpoint, tarefa independente não espera a anterior.
+
+- **FAÇA**: No plano, marque de que cada tarefa depende para começar. As que não dependem umas das outras formam um lote paralelo — deixe isso explícito no plano, não implícito na ordem da lista.
+- **FAÇA**: Ordene para maximizar o lote paralelo: resolva primeiro o que destrava mais tarefas (contrato, tipo, schema, assinatura), depois dispare o resto junto.
+- **FAÇA**: Se dá pra rodar em paralelo, rode — mas só o que é de fato independente: arquivos disjuntos, sem estado compartilhado, nenhuma precisa da saída da outra.
+- **FAÇA**: Convirja antes de fechar o checkpoint — build e testes rodam uma vez sobre o resultado junto, não por tarefa isolada.
+- **NÃO FAÇA**: Paralelizar tarefas que editam o mesmo arquivo — o conflito custa mais que o ganho.
+- **NÃO FAÇA**: Paralelizar por paralelizar em tarefa pequena — coordenar custa mais que fazer em sequência.
 
 ## Durante a implementação
 
