@@ -15,26 +15,26 @@ CLAUDE.md  # diretrizes gerais de comportamento do agente
 
 Duas formas de trazer isso pra um projeto:
 
-1. **Manual** — copie `agents/`, `rules/`, `skills/` e `CLAUDE.md` para dentro do `.claude/` do projeto alvo.
-2. **Via skill** — de dentro do projeto alvo, use a skill `import-claude-config` (deste próprio repo) apontando para `kenzo09/ai`. Como o layout aqui não segue o padrão `.claude/` (as pastas ficam na raiz), rode com `subpath` vazio — veja a seção "Non-standard layouts" do `SKILL.md` da própria skill.
+1. **Manual**: copie `agents/`, `rules/`, `skills/` e `CLAUDE.md` para dentro do `.claude/` do projeto alvo.
+2. **Via skill**: de dentro do projeto alvo, use a skill `import-claude-config` (deste próprio repo) apontando para `kenzo09/ai`. Como o layout aqui não segue o padrão `.claude/` (as pastas ficam na raiz), rode com `subpath` vazio; veja a seção "Non-standard layouts" do `SKILL.md` da própria skill.
 
 ## Agents
 
 | Agent | Persona | Output |
 |---|---|---|
-| `overview` | Especialista em Documentação Técnica / Arquiteto Sênior | `docs/OVERVIEW.md` — Design Doc completo |
-| `design` | Arquiteto de Soluções Principal | `docs/ARCHITECTURE.md` — diagramas Mermaid (flowchart, sequence, ERD, C4, state) |
-| `spec` | Analista de Sistemas / Engenheiro de Requisitos | `docs/specs/[modulo].md` — regras de negócio + cenários BDD |
-| `api-docs` | Arquiteto de APIs / Technical Writer | `docs/API_REFERENCE.md` — spec de endpoints REST |
+| `overview` | Especialista em Documentação Técnica / Arquiteto Sênior | `docs/OVERVIEW.md`: Design Doc completo |
+| `design` | Arquiteto de Soluções Principal | `docs/ARCHITECTURE.md`: diagramas Mermaid (flowchart, sequence, ERD, C4, state) |
+| `spec` | Analista de Sistemas / Engenheiro de Requisitos | `docs/specs/[modulo].md`: regras de negócio + cenários BDD |
+| `api-docs` | Arquiteto de APIs / Technical Writer | `docs/API_REFERENCE.md`: spec de endpoints REST |
 
 Todos seguem o mesmo protocolo: entrevistam o desenvolvedor antes de gerar o artefato final, não geram nada enquanto faltar informação crítica.
 
 ## Rules
 
-- **`design-principle.md`** — KISS, YAGNI, Responsabilidade Única e Early Return (guard clauses no topo da função, sem `else` desnecessário, sem cadeia de `if/else if`).
-- **`documentation.md`** — toda feature nova precisa de doc mínima; bugfix só atualiza a doc se o comportamento documentado mudou (não quando a doc já previa o certo e só o código estava errado).
-- **`task-breakdown.md`** — feature média/complexa entregue em checkpoints funcionais: build e testes verdes, nada quebrado, revertível isoladamente e validável à mão pelo usuário.
-- **`testing.md`** — fluxos críticos de negócio precisam ser fáceis de testar; priorizar E2E nos critérios de aceite do produto, unidade só onde compensa, sem inflar a suíte; todo cenário BDD documentado tem teste correspondente.
+- **`design-principle.md`**: KISS, YAGNI, Responsabilidade Única e Early Return (guard clauses no topo da função, sem `else` desnecessário, sem cadeia de `if/else if`).
+- **`documentation.md`**: toda feature nova precisa de doc mínima; bugfix só atualiza a doc se o comportamento documentado mudou (não quando a doc já previa o certo e só o código estava errado).
+- **`task-breakdown.md`**: feature média/complexa entregue em checkpoints funcionais: build e testes verdes, nada quebrado, revertível isoladamente e validável à mão pelo usuário.
+- **`testing.md`**: fluxos críticos de negócio precisam ser fáceis de testar; priorizar E2E nos critérios de aceite do produto, unidade só onde compensa, sem inflar a suíte; todo cenário BDD documentado tem teste correspondente.
 
 ## Skills
 
@@ -45,4 +45,4 @@ Todos seguem o mesmo protocolo: entrevistam o desenvolvedor antes de gerar o art
 
 ## CLAUDE.md
 
-Diretrizes gerais de comportamento — simplicidade por padrão, assumir em vez de travar em ambiguidade, mudanças cirúrgicas, critério verificável — e a regra de sempre responder em pt-BR. Feito pra funcionar sozinho, mesmo em projetos sem plugins extras instalados.
+Diretrizes gerais de comportamento (simplicidade por padrão, assumir em vez de travar em ambiguidade, mudanças cirúrgicas, critério verificável) e a regra de sempre responder em pt-BR. Feito pra funcionar sozinho, mesmo em projetos sem plugins extras instalados.

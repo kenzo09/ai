@@ -1,13 +1,13 @@
 # Guideline: Arquitetura Macro
 
-Produz **um artefato**: `docs/architecture/overview.md` — o sistema inteiro em uma página, um diagrama mais o mínimo de
+Produz **um artefato**: `docs/architecture/overview.md`: o sistema inteiro em uma página, um diagrama mais o mínimo de
 texto ao redor.
 
 **Princípio central:** toda aresta do diagrama e toda linha das tabelas sai de uma leitura do código. Integração que
 você não encontrou no código não entra no desenho.
 
-Este doc responde "o que é este sistema e de quem ele depende". Não responde "como implementar X" — isso é
-`reference.md`. Não registra decisão — isso é ADR. Não descreve comportamento observável — isso é BDD.
+Este doc responde "o que é este sistema e de quem ele depende". Não responde "como implementar X": isso é
+`reference.md`. Não registra decisão: isso é ADR. Não descreve comportamento observável: isso é BDD.
 
 ## Quando rodar
 
@@ -33,13 +33,13 @@ linha por item, o que divergia.
 ### 1. Mapeie os pontos de entrada
 
 Procure controllers, handlers de rota, consumers de fila, comandos de CLI, jobs agendados, handlers de webhook.
-Cada um corresponde a um ator ou a uma aresta de entrada. Anote também qual autenticação cada um exige — atores
+Cada um corresponde a um ator ou a uma aresta de entrada. Anote também qual autenticação cada um exige. Atores
 diferentes costumam entrar por portas diferentes.
 
 ### 2. Leia o composition root
 
 O arquivo onde as dependências são registradas (DI container, factory de app, módulo de bootstrap) é o inventário mais
-confiável de dependências externas. Ele revela com o que o sistema de fato se comunica — mais do que qualquer README.
+confiável de dependências externas. Ele revela com o que o sistema de fato se comunica, mais do que qualquer README.
 
 ### 3. Leia cada client de integração
 
@@ -47,7 +47,7 @@ Para cada dependência externa, abra a implementação do client e anote:
 
 - transporte e endereço/rota/tópico
 - política de retry, timeout, circuit breaker
-- **o que acontece no erro** — propaga, devolve valor vazio, ou é suprimido
+- **o que acontece no erro**: propaga, devolve valor vazio, ou é suprimido
 
 O tratamento de erro é o item que dá substância ao doc e o mais fácil de supor sem verificar. Se não localizou,
 registre `não verificado` na tabela em vez de inferir.
@@ -66,14 +66,14 @@ verificada é removida, não desenhada com ressalva.
 
 Nesta ordem, sem seções a mais nem a menos (seções extras só ao atualizar um doc que já as tinha):
 
-1. **Título e essência** — um ou dois parágrafos: o que o sistema faz e a característica macro que define sua forma.
+1. **Título e essência**: um ou dois parágrafos: o que o sistema faz e a característica macro que define sua forma.
    Por exemplo: ausência de estado, orientação a eventos, datastore único, papel de proxy
-2. **Diagrama** — um bloco mermaid, o centro do doc
-3. **Componentes** — tabela do que roda dentro do limite do sistema
-4. **Fluxo principal** — o caminho mais comum, em bloco de texto curto
-5. **Dependências e o que acontece quando falham** — tabela de criticidade e comportamento na falha
-6. **Pontos de atenção** — restrições e invariantes não óbvias que quebram o sistema quando violadas
-7. **Links** — para os docs de detalhe (`docs/features/<modulo>/`, `docs/adrs/`)
+2. **Diagrama**: um bloco mermaid, o centro do doc
+3. **Componentes**: tabela do que roda dentro do limite do sistema
+4. **Fluxo principal**: o caminho mais comum, em bloco de texto curto
+5. **Dependências e o que acontece quando falham**: tabela de criticidade e comportamento na falha
+6. **Pontos de atenção**: restrições e invariantes não óbvias que quebram o sistema quando violadas
+7. **Links**: para os docs de detalhe (`docs/features/<modulo>/`, `docs/adrs/`)
 
 ## Template
 
@@ -161,7 +161,7 @@ flowchart LR
 
 - `<br/>` na segunda linha do rótulo para tecnologia ou responsabilidade
 - Label de aresta traz protocolo, rota/tópico e política (`retry 3x`, `timeout 2s`)
-- Limite do sistema em `subgraph` — o que está dentro é responsabilidade da equipe; o que está fora, de terceiros
+- Limite do sistema em `subgraph`: o que está dentro é responsabilidade da equipe; o que está fora, de terceiros
 - `classDef externo` em tudo que está fora; `dados` em datastores; `assinc` em filas
 
 ## Limites

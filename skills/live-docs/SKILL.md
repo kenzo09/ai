@@ -1,13 +1,13 @@
 ---
 name: live-docs
-description: Central documentation skill. Use when an implementation plan finishes, when an observable behavior changes (business rule, authorization, API contract, technical flow), when an architectural decision is made, when a contract or env var changes, when the repository lacks a macro view of the system, when auditing whether existing docs reflect the current codebase, or when migrating planning artifacts (specs, plans, issues, PRs) into structured documentation. Triggers on requests like "document this feature", "update the docs", "write the BDD for this", "record this decision as an ADR", "generate the architecture overview", "are the docs stale?", "migrate these specs into docs" — and proactively after completing any change to observable behavior, even with no explicit request for documentation. Accepts a doc type as argument to focus on a single artifact.
+description: Central documentation skill. Use when an implementation plan finishes, when an observable behavior changes (business rule, authorization, API contract, technical flow), when an architectural decision is made, when a contract or env var changes, when the repository lacks a macro view of the system, when auditing whether existing docs reflect the current codebase, or when migrating planning artifacts (specs, plans, issues, PRs) into structured documentation. Triggers on requests like "document this feature", "update the docs", "write the BDD for this", "record this decision as an ADR", "generate the architecture overview", "are the docs stale?", "migrate these specs into docs", and proactively after completing any change to observable behavior, even with no explicit request for documentation. Accepts a doc type as argument to focus on a single artifact.
 argument-hint: "[architecture|bdd|prd|adr|reference]"
 ---
 
 # Documentação Viva
 
 Converte artefatos de planejamento (specs, planos, issues, PRs) em documentação estruturada e viva, fiel ao código
-atual — não à intenção original do design.
+atual, não à intenção original do design.
 
 **Princípio central:** docs descrevem o que o sistema *faz*, verificado no código. Descarte qualquer coisa que a spec
 planejou mas o código não entregou.
@@ -27,10 +27,10 @@ planejou mas o código não entregou.
 
 **Sem argumento:** a doc inteira está no escopo. Passe pelos cinco tipos na ordem `architecture` → `prd` → `bdd` →
 `reference` → `adr` e, para **cada um**, tome uma decisão explícita: criar, atualizar ou nada a fazer. Nenhum tipo é
-pulado em silêncio — "nada a fazer" é uma conclusão que você registra, não uma omissão. Ao terminar, relate uma linha
+pulado em silêncio: "nada a fazer" é uma conclusão que você registra, não uma omissão. Ao terminar, relate uma linha
 por tipo com o que aconteceu.
 
-**Com um tipo nomeado:** carregue **apenas** o guideline daquele tipo e ignore os demais artefatos — inclusive não crie
+**Com um tipo nomeado:** carregue **apenas** o guideline daquele tipo e ignore os demais artefatos; inclusive não crie
 docs de outros tipos "de brinde". Argumento não reconhecido: trate como vazio e avise em uma linha.
 
 ## Guidelines por tipo
@@ -51,7 +51,7 @@ escrever:
 ```
 docs/
   architecture/
-    overview.md                   # Visão macro do sistema — o topo da documentação
+    overview.md                   # Visão macro do sistema, o topo da documentação
   adrs/
     NNN-<titulo>.md               # Um ADR por decisão arquitetural
   features/
@@ -63,7 +63,7 @@ docs/
 ```
 
 **Nomes de módulo** mapeiam o domínio de negócio, não o pacote/diretório de código. Descubra os módulos lendo o
-código — não assuma nomes.
+código; não assuma nomes.
 
 ## Processo
 
@@ -83,7 +83,7 @@ flowchart TD
 
 ### Passo 1: Ler a fonte
 
-Localize os artefatos de planejamento do projeto — podem estar em:
+Localize os artefatos de planejamento do projeto. Podem estar em:
 - Diretório de specs/plans local (`docs/superpowers/`, `docs/specs/`, `docs/rfcs/`, etc.)
 - Issues ou PRs do repositório
 - Arquivos de design passados para a conversa
@@ -96,7 +96,7 @@ Para migração retroativa: processe em ordem cronológica. Artefatos mais recen
 
 - Para cada afirmação, verifique se corresponde ao código atual
 - Descarte decisões que foram alteradas ou nunca implementadas
-- Use os nomes atuais do código (pacotes, env vars, endpoints) — não os da spec
+- Use os nomes atuais do código (pacotes, env vars, endpoints), não os da spec
 
 ### Passo 3: Identificar o que foi afetado
 
@@ -104,7 +104,7 @@ Da fonte, liste:
 - Quais módulos de domínio foram criados ou modificados
 - Quais decisões arquiteturais foram tomadas (apenas tradeoffs não-óbvios)
 - Se a mudança tocou um ponto de entrada, uma integração externa, um datastore ou o comportamento na falha de
-  alguma dependência — nesse caso o overview de arquitetura entra na lista
+  alguma dependência, nesse caso o overview de arquitetura entra na lista
 
 ### Passo 4: Criar ou atualizar docs
 
@@ -114,7 +114,7 @@ Depois, para cada módulo afetado, na ordem: `prd.md` → `bdd.md` → `referenc
 
 Para cada artefato, leia o guideline correspondente na tabela acima antes de escrever.
 
-**Nunca:** modificar os artefatos de planejamento originais (specs, planos, issues) — são fonte histórica, não docs de
+**Nunca:** modificar os artefatos de planejamento originais (specs, planos, issues): são fonte histórica, não docs de
 produto.
 
 **Nunca:** criar links de docs para artefatos de planejamento que possam estar ausentes no repositório (gitignored,
@@ -134,7 +134,7 @@ Quando invocado para auditar ou migrar documentação existente:
 3. Cruze com `docs/architecture/`, `docs/features/` e `docs/adrs/` existentes
 4. Para cada lacuna (conteúdo da spec ausente nos docs), verifique no código e escreva o doc
 5. Para cada doc que contradiz o código atual, atualize
-6. Se não há visão macro do sistema, comece por ela — sem o overview o leitor não tem por onde começar
+6. Se não há visão macro do sistema, comece por ela: sem o overview o leitor não tem por onde começar
 
 **Descarte da spec se:**
 - O código não implementa

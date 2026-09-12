@@ -5,7 +5,7 @@ argument-hint: "What will the next session be used for?"
 disable-model-invocation: true
 ---
 
-Escreva um documento de handoff resumindo a conversa atual para que um agente novo possa continuar o trabalho. Salve em `docs/handoff/` na raiz do projeto (crie a pasta se não existir), com nome de arquivo descritivo. Garanta que `docs/handoff/` esteja no `.gitignore` — se não estiver, adicione (criando o `.gitignore` caso não exista).
+Escreva um documento de handoff resumindo a conversa atual para que um agente novo possa continuar o trabalho. Salve em `docs/handoff/` na raiz do projeto (crie a pasta se não existir), com nome de arquivo descritivo. Garanta que `docs/handoff/` esteja no `.gitignore`; se não estiver, adicione (criando o `.gitignore` caso não exista).
 
 Inclua uma seção "skills sugeridas" no documento, nomeando quais skills o próximo agente deve invocar via ferramenta Skill.
 

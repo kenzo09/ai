@@ -8,13 +8,13 @@ Cada função, classe ou módulo deve ter **um propósito claro** e um único mo
 
 ## Fail Fast (Early Return)
 
-Trate condições de saída antecipada logo no topo da função — não deixe o caminho principal enterrado em uma cadeia de `if/else`.
+Trate condições de saída antecipada logo no topo da função. Não deixe o caminho principal enterrado em uma cadeia de `if/else`.
 
 - **FAÇA**: Verifique a condição inválida ou de borda primeiro e retorne (`return`/`throw`/`continue`) imediatamente
 - **FAÇA**: Mantenha o caminho principal ("happy path") no nível de indentação mais raso
 - **NÃO FAÇA**: Encadear vários `if/else if/else` quando um guard clause resolve
 - **NÃO FAÇA**: Aninhar validações umas dentro das outras
-- **NÃO FAÇA**: Usar `else` depois de um `if` que já termina em `return`/`throw`/`continue` — se o `if` sai da função, o que vem depois já é o caminho principal, sem precisar de `else`
+- **NÃO FAÇA**: Usar `else` depois de um `if` que já termina em `return`/`throw`/`continue`; se o `if` sai da função, o que vem depois já é o caminho principal, sem precisar de `else`
 
 ## Mudanças cirúrgicas
 

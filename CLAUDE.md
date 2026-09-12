@@ -2,7 +2,7 @@ Diretrizes de comportamento para reduzir erros comuns de LLM ao codificar. Mescl
 
 # Idioma
 
-O idioma de cada saída é definido pelo tipo de artefato produzido — nunca pelo idioma da solicitação, do código ou dos arquivos envolvidos. Siga a tabela:
+O idioma de cada saída é definido pelo tipo de artefato produzido, nunca pelo idioma da solicitação, do código ou dos arquivos envolvidos. Siga a tabela:
 
 | Artefato | Idioma |
 |---|---|

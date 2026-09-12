@@ -1,6 +1,6 @@
 # Guideline: Reference Técnica
 
-`docs/features/<modulo>/reference.md` — os contratos que desenvolvedores dependem. Curto, escaneável, verificado
+`docs/features/<modulo>/reference.md`: os contratos que desenvolvedores dependem. Curto, escaneável, verificado
 contra o código atual.
 
 **Audiência:** quem vai consumir ou manter o módulo. Ao contrário do PRD, aqui nome de código é obrigatório.
@@ -32,7 +32,7 @@ Cada linha do reference sai de uma leitura do código, não da spec:
 - **Endpoints:** confirme rota, método e auth no handler, não no doc antigo.
 - **Erros:** confirme código e mensagem no ponto onde o erro é levantado.
 
-Contrato que você não localizou no código sai do doc — não fica com ressalva.
+Contrato que você não localizou no código sai do doc; não fica com ressalva.
 
 ## Erros comuns
 

@@ -1,12 +1,12 @@
 # Guideline: ADR
 
-`docs/adrs/NNN-<titulo>.md` — um ADR por decisão arquitetural. Documenta **por que** uma decisão não-óbvia foi tomada.
+`docs/adrs/NNN-<titulo>.md`: um ADR por decisão arquitetural. Documenta **por que** uma decisão não-óbvia foi tomada.
 
 **Criar apenas quando:** a decisão tem tradeoffs reais e mantenedores futuros questionariam. Decisão óbvia ou sem
 alternativa viável não é ADR.
 
 **Numeração:** inteiros sequenciais, zero-padded em 3 dígitos (`001`, `002`, …). Antes de criar, liste `docs/adrs/`
-para descobrir o próximo número — não assuma.
+para descobrir o próximo número; não assuma.
 
 ## Quando rodar
 

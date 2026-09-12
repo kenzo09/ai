@@ -1,6 +1,6 @@
 # Guideline: PRD
 
-`docs/features/<modulo>/prd.md` — por que esta feature existe, quem usa, que problema resolve.
+`docs/features/<modulo>/prd.md`: por que esta feature existe, quem usa, que problema resolve.
 
 **Audiência:** PMs, novatos, não-engenheiros. Se o leitor precisa abrir o código para entender o PRD, o PRD falhou.
 
@@ -16,7 +16,7 @@ interno). Nesse caso `reference.md` basta.
 ## Template
 
 ```markdown
-# <Feature> — PRD
+# <Feature>: PRD
 
 ## Objetivo
 Um parágrafo: o problema sendo resolvido.
@@ -35,7 +35,7 @@ Lista com os 3–7 comportamentos mais importantes do ponto de vista de negócio
 
 | Regra | Por quê |
 |---|---|
-| Zero referência a código — sem nome de classe, endpoint, tabela ou env var | A audiência é não-técnica; detalhe técnico vive em `reference.md` |
+| Zero referência a código: sem nome de classe, endpoint, tabela ou env var | A audiência é não-técnica; detalhe técnico vive em `reference.md` |
 | "Fora de escopo" é obrigatório quando existe | Ausência de limite é a maior fonte de expectativa errada |
 | Comportamentos-chave em linguagem de negócio | Se vira lista de endpoints, virou reference |
 | 3–7 comportamentos-chave | Mais que isso, o módulo provavelmente são dois |

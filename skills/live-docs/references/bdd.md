@@ -1,7 +1,7 @@
 # Guideline: BDD
 
 Documente comportamentos observáveis do sistema como cenários BDD em `docs/features/<modulo>/bdd.md`. Cenários
-descrevem o que o sistema faz visto de fora — não como faz internamente.
+descrevem o que o sistema faz visto de fora, não como faz internamente.
 
 ## Quando rodar
 
@@ -18,13 +18,13 @@ aceito, não há nada comportamental a documentar.
 
 Dois tipos de conteúdo pertencem aos docs BDD:
 
-**Comportamentos de negócio** — regras visíveis a usuários e stakeholders:
+**Comportamentos de negócio** (regras visíveis a usuários e stakeholders):
 - Regras de validação (campos obrigatórios, formatos, restrições de unicidade)
 - Autorização (quem pode fazer o quê, sob quais condições)
 - Invariantes de domínio (ex.: número de matrícula único por escola, não globalmente)
 - Regras de workflow (criação transacional de múltiplos registros, sucesso parcial na importação)
 
-**Comportamentos técnicos** — regras invisíveis ao usuário, mas contratuais para desenvolvedores:
+**Comportamentos técnicos** (regras invisíveis ao usuário, mas contratuais para desenvolvedores):
 - Fluxos de token de auth (como um token do provedor A se torna um token válido para o sistema B)
 - Resolução de tenant (como o sistema determina a qual tenant uma request pertence)
 - Regras de fallback e default (o que acontece quando uma claim está ausente)
@@ -49,7 +49,7 @@ docs/features/
 ```
 
 **Quebre em `bdd/` quando** o módulo cresce para 3 ou mais unidades de comportamento que um dev consultaria de forma
-independente. Nomeie os arquivos internos pelo comportamento específico (`checkout.md`, não `payments-checkout.md` — a
+independente. Nomeie os arquivos internos pelo comportamento específico (`checkout.md`, não `payments-checkout.md`; a
 pasta já fornece o namespace). Junte quando os cenários são finos demais para existirem sozinhos.
 
 ## Estrutura Canônica
@@ -86,13 +86,13 @@ Texto descrevendo o comportamento. Declare regras invariantes aqui.
 |---|---|
 | Nome do arquivo | kebab-case correspondente à unidade de comportamento |
 | `### Grupo de Comportamento` | Agrupa cenários relacionados sob um mesmo aspecto funcional |
-| `**Dado**` | Estado inicial ou precondição — define o contexto |
+| `**Dado**` | Estado inicial ou precondição: define o contexto |
 | `**Quando**` | A ação ou evento que dispara o comportamento |
 | `**Então**` | O resultado esperado observável |
-| `**E**` | Resultado adicional — nunca repita nem reescreva o `Então` |
+| `**E**` | Resultado adicional: nunca repita nem reescreva o `Então` |
 | Conectivos em negrito | Sempre em negrito: `**Dado**`, `**Quando**`, `**Então**`, `**E**` |
 | Tom | Objetivo, sem jargão. Legível sem conhecer o código |
-| Escopo | Comportamento observável externamente — sem detalhes de implementação |
+| Escopo | Comportamento observável externamente: sem detalhes de implementação |
 
 Use o idioma do projeto: Dado/Quando/Então ou Given/When/Then, nunca misturados.
 
@@ -132,7 +132,7 @@ docs/features/student-management/bdd.md   →  suíte "Student Management"
   it("matrícula duplicada na mesma escola", ...)
 ```
 
-Se o projeto já tem outra convenção de nomes de teste, siga a do projeto — o que importa é que dê para ir do cenário ao
+Se o projeto já tem outra convenção de nomes de teste, siga a do projeto; o que importa é que dê para ir do cenário ao
 teste (e vice-versa) sem adivinhar. Ferramenta de BDD executável (Cucumber, Behave, SpecFlow) é opcional: teste comum
 com nome espelhado cumpre o papel.
 
@@ -145,10 +145,10 @@ Percorra o arquivo BDD e, para cada cenário, localize o teste:
 
 | Situação | O que fazer |
 |---|---|
-| Cenário sem teste | Escreva o teste. Se ele falhar, o sistema não faz o que a doc afirma — decida se é bug ou doc desatualizada |
+| Cenário sem teste | Escreva o teste. Se ele falhar, o sistema não faz o que a doc afirma; decida se é bug ou doc desatualizada |
 | Teste sem cenário | Se cobre comportamento observável, documente o cenário; se cobre detalhe interno, deixe fora do BDD |
 | Cenário e teste discordam | Verifique o comportamento real no código antes de mudar qualquer um dos dois |
-| Cenário que ninguém pretende testar | Remova o cenário — o BDD documenta comportamento verificável, não intenção |
+| Cenário que ninguém pretende testar | Remova o cenário: o BDD documenta comportamento verificável, não intenção |
 
 **Nunca** ajuste o teste para passar sem antes decidir qual lado está errado. Um teste alinhado a uma doc errada só
 torna o erro permanente.
@@ -157,8 +157,8 @@ torna o erro permanente.
 
 Ao modificar qualquer comportamento, localize o cenário correspondente e:
 
-1. **Atualize** — se o comportamento mudou
-2. **Adicione** — se é comportamento novo sem cenário existente
-3. **Remova** — se o comportamento foi eliminado
+1. **Atualize**: se o comportamento mudou
+2. **Adicione**: se é comportamento novo sem cenário existente
+3. **Remova**: se o comportamento foi eliminado
 
-Docs BDD devem refletir o **comportamento atual real** do sistema — não o comportamento desejado ou histórico.
+Docs BDD devem refletir o **comportamento atual real** do sistema, não o comportamento desejado ou histórico.
