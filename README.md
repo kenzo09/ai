@@ -25,7 +25,6 @@ Duas formas de trazer isso pra um projeto:
 | `overview` | Especialista em Documentação Técnica / Arquiteto Sênior | `docs/OVERVIEW.md`: Design Doc completo |
 | `design` | Arquiteto de Soluções Principal | `docs/ARCHITECTURE.md`: diagramas Mermaid (flowchart, sequence, ERD, C4, state) |
 | `spec` | Analista de Sistemas / Engenheiro de Requisitos | `docs/specs/[modulo].md`: regras de negócio + cenários BDD |
-| `api-docs` | Arquiteto de APIs / Technical Writer | `docs/API_REFERENCE.md`: spec de endpoints REST |
 
 Todos seguem o mesmo protocolo: entrevistam o desenvolvedor antes de gerar o artefato final, não geram nada enquanto faltar informação crítica.
 
@@ -41,7 +40,7 @@ Todos seguem o mesmo protocolo: entrevistam o desenvolvedor antes de gerar o art
 | Skill | Quando usar |
 |---|---|
 | `import-claude-config` | Puxar o `.claude/` de um repo público do GitHub (skills, agents, rules, CLAUDE.md) pro projeto atual |
-| `live-docs` | Skill central de documentação: converte specs/plans/issues em doc viva fiel ao código atual. Guidelines por tipo em `references/` (architecture, prd, bdd, reference, adr). Aceita argumento pra focar num tipo: `/live-docs architecture` |
+| `live-docs` | Skill central de documentação: converte specs/plans/issues em doc viva fiel ao código atual. Guidelines por tipo em `references/` (architecture, prd, bdd, adr). Aceita argumento pra focar num tipo: `/live-docs architecture` |
 
 ## CLAUDE.md
 

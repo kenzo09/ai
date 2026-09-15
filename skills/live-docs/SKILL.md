@@ -1,7 +1,7 @@
 ---
 name: live-docs
 description: Central documentation skill. Use when an implementation plan finishes, when an observable behavior changes (business rule, authorization, API contract, technical flow), when an architectural decision is made, when a contract or env var changes, when the repository lacks a macro view of the system, when auditing whether existing docs reflect the current codebase, or when migrating planning artifacts (specs, plans, issues, PRs) into structured documentation. Triggers on requests like "document this feature", "update the docs", "write the BDD for this", "record this decision as an ADR", "generate the architecture overview", "are the docs stale?", "migrate these specs into docs", and proactively after completing any change to observable behavior, even with no explicit request for documentation. Accepts a doc type as argument to focus on a single artifact.
-argument-hint: "[architecture|bdd|prd|adr|reference]"
+argument-hint: "[architecture|bdd|prd|adr]"
 ---
 
 # Documentação Viva
@@ -18,15 +18,13 @@ planejou mas o código não entregou.
 
 | Argumento | O que fazer |
 |-----------|-------------|
-| vazio | **Todos os cinco tipos.** Percorra a documentação como um todo, sem escolher tipo por conta própria |
+| vazio | **Todos os quatro tipos.** Percorra a documentação como um todo, sem escolher tipo por conta própria |
 | `architecture` | Só `docs/architecture/overview.md` |
 | `bdd` | Só os `bdd.md` dos módulos afetados |
 | `prd` | Só os `prd.md` dos módulos afetados |
 | `adr` | Só os ADRs das decisões não-óbvias |
-| `reference` | Só os `reference.md` dos módulos afetados |
 
-**Sem argumento:** a doc inteira está no escopo. Passe pelos cinco tipos na ordem `architecture` → `prd` → `bdd` →
-`reference` → `adr` e, para **cada um**, tome uma decisão explícita: criar, atualizar ou nada a fazer. Nenhum tipo é
+**Sem argumento:** a doc inteira está no escopo. Passe pelos quatro tipos na ordem `architecture` → `prd` → `bdd` → `adr` e, para **cada um**, tome uma decisão explícita: criar, atualizar ou nada a fazer. Nenhum tipo é
 pulado em silêncio: "nada a fazer" é uma conclusão que você registra, não uma omissão. Ao terminar, relate uma linha
 por tipo com o que aconteceu.
 
@@ -43,7 +41,6 @@ escrever:
 | Arquitetura | `docs/architecture/overview.md` | [references/architecture.md](references/architecture.md) |
 | PRD | `docs/features/<modulo>/prd.md` | [references/prd.md](references/prd.md) |
 | BDD | `docs/features/<modulo>/bdd.md` | [references/bdd.md](references/bdd.md) |
-| Reference | `docs/features/<modulo>/reference.md` | [references/reference.md](references/reference.md) |
 | ADR | `docs/adrs/NNN-<titulo>.md` | [references/adr.md](references/adr.md) |
 
 ## Estrutura de Pastas
@@ -58,7 +55,6 @@ docs/
     <modulo>/
       prd.md                      # Propósito de negócio e valor para o usuário
       bdd.md                      # Comportamentos observáveis (Dado/Quando/Então)
-      reference.md                # Contratos de API, config, uso
       <outro>.md                  # Qualquer doc adicional (diagramas, runbook, etc.)
 ```
 
@@ -110,7 +106,7 @@ Da fonte, liste:
 
 Comece pelo topo: `docs/architecture/overview.md`. Se o artefato não existe, crie; se existe, atualize o que divergiu.
 
-Depois, para cada módulo afetado, na ordem: `prd.md` → `bdd.md` → `reference.md` → ADRs.
+Depois, para cada módulo afetado, na ordem: `prd.md` → `bdd.md` → ADRs.
 
 Para cada artefato, leia o guideline correspondente na tabela acima antes de escrever.
 

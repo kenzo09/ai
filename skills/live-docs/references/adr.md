@@ -15,7 +15,7 @@ para descobrir o próximo número; não assuma.
 - Auditoria retroativa: existe no código uma decisão que ninguém consegue explicar
 
 **Quando NÃO usar:** registro de o que foi planejado (isso é a spec), descrição de comportamento (BDD), ou contrato
-técnico (reference).
+técnico.
 
 ## Template
 

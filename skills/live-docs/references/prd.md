@@ -11,7 +11,7 @@
 - Módulo perdeu responsabilidade → mova o que saiu para "fora de escopo"
 
 **Quando NÃO usar:** módulo puramente técnico sem valor de negócio distinguível (um wrapper de biblioteca, um helper
-interno). Nesse caso `reference.md` basta.
+interno). Nesse caso o próprio código e o OpenAPI bastam.
 
 ## Template
 
@@ -35,9 +35,9 @@ Lista com os 3–7 comportamentos mais importantes do ponto de vista de negócio
 
 | Regra | Por quê |
 |---|---|
-| Zero referência a código: sem nome de classe, endpoint, tabela ou env var | A audiência é não-técnica; detalhe técnico vive em `reference.md` |
+| Zero referência a código: sem nome de classe, endpoint, tabela ou env var | A audiência é não-técnica; detalhe técnico vive no código/OpenAPI |
 | "Fora de escopo" é obrigatório quando existe | Ausência de limite é a maior fonte de expectativa errada |
-| Comportamentos-chave em linguagem de negócio | Se vira lista de endpoints, virou reference |
+| Comportamentos-chave em linguagem de negócio | Se vira lista de endpoints, saiu do PRD |
 | 3–7 comportamentos-chave | Mais que isso, o módulo provavelmente são dois |
 | Verificado contra o código | Escopo que a spec prometeu e o código não entregou não entra |
 
