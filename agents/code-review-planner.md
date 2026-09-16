@@ -1,7 +1,7 @@
 ---
 name: code-review-planner
 description: Use this agent when the user wants an over-engineering review of a branch, working tree or whole repository turned into an actionable, per-repository handoff document that another agent will execute. Typical triggers include "roda o ponytail review e gera o handoff", "as changes estão muito grandes, vê o que dá pra simplificar e documenta", "audita esse repo e me entrega o handoff de simplificação", and reviewing several sibling repositories touched by the same issue at once. Do NOT use for correctness or security review, and do NOT use to apply fixes — that is the `code-review-executor` agent. See "When to invoke" in the agent body for worked scenarios.
-model: fable
+model: opus
 color: cyan
 tools: ["Read", "Grep", "Glob", "Bash", "Write", "Edit", "Skill", "Agent"]
 ---
