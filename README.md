@@ -39,8 +39,11 @@ Todos seguem o mesmo protocolo: entrevistam o desenvolvedor antes de gerar o art
 
 | Skill | Quando usar |
 |---|---|
+| `handoff` | Compactar a conversa atual num documento de handoff pra outro agente continuar |
 | `import-claude-config` | Puxar o `.claude/` de um repo público do GitHub (skills, agents, rules, CLAUDE.md) pro projeto atual |
 | `live-docs` | Skill central de documentação: converte specs/plans/issues em doc viva fiel ao código atual. Guidelines por tipo em `references/` (architecture, prd, bdd, adr). Aceita argumento pra focar num tipo: `/live-docs architecture` |
+| `split-merges` | Quebrar uma branch (ou branches irmãs de um ticket) grande demais em MRs pequenos e independentes: mapeia dependências, ordena os cortes e gera o handoff em `docs/handoff/` que outro agente executa. Template em `assets/` |
+| `test-evidence` | Capturar evidência visual (Playwright, Swagger, Postman, DevTools, curl) antes de declarar uma entrega pronta, com redação de dados sensíveis |
 
 ## CLAUDE.md
 
