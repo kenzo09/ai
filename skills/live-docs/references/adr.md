@@ -14,8 +14,7 @@ para descobrir o próximo número; não assuma.
 - Uma decisão anterior foi substituída → novo ADR + marca o antigo como `Substituído por ADR-XXX`
 - Auditoria retroativa: existe no código uma decisão que ninguém consegue explicar
 
-**Quando NÃO usar:** registro de o que foi planejado (isso é a spec), descrição de comportamento (BDD), ou contrato
-técnico.
+**Quando NÃO usar:** registro do que foi planejado (isso é a spec) ou contrato técnico.
 
 ## Template
 

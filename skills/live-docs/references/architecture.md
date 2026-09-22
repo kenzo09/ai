@@ -7,7 +7,7 @@ texto ao redor.
 você não encontrou no código não entra no desenho.
 
 Este doc responde "o que é este sistema e de quem ele depende". Não responde "como implementar X": isso é
-os docs do módulo. Não registra decisão: isso é ADR. Não descreve comportamento observável: isso é BDD.
+os docs do módulo. Não registra decisão: isso é ADR.
 
 ## Quando rodar
 

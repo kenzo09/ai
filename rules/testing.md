@@ -1,54 +1,65 @@
 # Testes
 
-Testabilidade é parte do design, não um afterthought, principalmente para fluxos críticos de negócio.
+Todo teste responde a uma pergunta: **o que o usuário perde se isso quebrar?** Sem resposta, o teste não deveria existir. Confiança vem de poucos testes que atravessam o sistema de verdade, não de muitos que exercitam peças isoladas.
 
-## Escopo: o que a suíte cobre
+A meta deste repositório é uma suíte que cabe na cabeça: pequena, rápida, e onde uma falha vermelha significa "o produto quebrou", não "alguém renomeou um campo".
 
-A suíte cobre **as features core**: o que o produto promete e o que quebra o negócio se falhar. Nada além disso. Suíte enxuta que roda rápido e falha por motivo real vale mais que suíte grande onde ninguém sabe o que uma falha significa.
+## Ordem de preferência
 
-- **FAÇA**: Cubra toda feature core por um teste que a exercita de fora (E2E, integration ou smoke), no nível em que o usuário a percebe.
-- **FAÇA**: Teste de unidade **só para caso muito crítico**: algoritmo com regra de negócio não óbvia, cálculo, fronteira de segurança (authz, anti-SSRF, path traversal, redaction de segredo), classificação de falha que decide retry/perda de dado. Se não é crítico, o teste de fora já basta.
-- **FAÇA**: Remova teste micro ao encontrá-lo. Micro é: round-trip de JSON/YAML que só valida tag de struct, getter, `String()`, parse de enum, helper trivial, wrapper que só delega, e qualquer caso já coberto por um teste de fora.
-- **FAÇA**: Prefira uma tabela de casos num arquivo por conceito a um arquivo por tipo/método.
-- **NÃO FAÇA**: Buscar cobertura por número. Cobertura de linha não é critério; "essa feature core tem teste?" é.
-- **NÃO FAÇA**: Manter teste que só falha quando alguém renomeia um campo interno.
+Pare no primeiro nível que dá confiança real sobre o comportamento:
 
-Esse escopo vale igualmente para o que **não** existe: feature core sem teste de fora é lacuna a declarar em voz alta, não a compensar com uma pilha de testes de unidade.
+1. **E2E** — exercita o sistema pela borda que o usuário usa (UI, API, CLI). É o teste mais valioso: é o único que prova que as partes integram.
+2. **Integração** — quando a borda completa não é alcançável (dependência externa sem sandbox, ambiente caro), cubra o maior pedaço real que der.
+3. **Unidade** — último recurso, só quando a lógica é crítica **e** o caso é inalcançável de fora.
 
-## Fluxos críticos
+"Inalcançável de fora" significa combinação que não dá para provocar pela borda: matriz grande de casos de cálculo, fronteira de segurança (authz, path traversal, redaction), classificação de erro que decide retry versus perda de dado. "É mais fácil testar isolado" não conta.
 
-- **FAÇA**: Projete fluxos críticos de negócio (pagamento, autenticação, cálculo de preço, etc.) para que um cenário completo seja fácil de reproduzir num teste, sem mock elaborado nem setup manual extenso.
-- **FAÇA**: Se um fluxo crítico é difícil de testar, trate isso como sinal de acoplamento ruim: resolva o acoplamento, não pule o teste.
+- **FAÇA**: Cubra toda feature core por um teste de fora, no nível em que o usuário a percebe.
+- **FAÇA**: Ao corrigir um bug, deixe um teste que falharia antes do fix — no nível mais alto que consiga reproduzi-lo.
+- **NÃO FAÇA**: Criar teste de unidade para um método só porque ele existe.
+- **NÃO FAÇA**: Testar detalhe de implementação que muda sem afetar comportamento observável.
 
-## Unidade vs E2E
+## O que não merece teste
 
-- **FAÇA**: Priorize testes E2E focados nos critérios de aceite do produto (o que é observável de fora) para os fluxos críticos.
-- **FAÇA**: Use teste de unidade só quando a lógica é crítica **e** isolá-la é a única forma de exercitar o caso (ver *Escopo* acima).
-- **NÃO FAÇA**: Criar teste de unidade para todo método só porque ele existe: isso infla a suíte sem aumentar confiança real.
-- **NÃO FAÇA**: Testar detalhe de implementação que muda sem afetar o comportamento observável.
+- **NÃO FAÇA**: Testar getter, wrapper que só delega, serialização que só valida anotação de struct, enum, helper trivial.
+- **NÃO FAÇA**: Escrever teste cujo setup é majoritariamente mock: você está testando os mocks.
+- **NÃO FAÇA**: Duplicar num nível abaixo um caso que o teste de fora já cobre.
+- **NÃO FAÇA**: Perseguir número de cobertura. Cobertura de linha não é critério; "essa feature core tem teste?" é.
+- **NÃO FAÇA**: Escrever teste para o quality gate passar. Se o gate exige cobertura que o escopo acima não justifica, isso é um problema do gate: declare em voz alta em vez de encher a suíte.
+
+## Custo de manutenção
+
+Todo teste é código que alguém vai manter. A suíte só permanece útil se encolher com a mesma facilidade com que cresce.
+
+- **FAÇA**: Remova teste micro ao encontrá-lo, mesmo que esteja passando. Deletar é contribuição.
+- **FAÇA**: Antes de criar um arquivo novo, veja se um teste existente deveria cobrir mais um caso. Uma tabela de casos por conceito vale mais que um arquivo por método.
+- **FAÇA**: Mantenha a suíte rápida o bastante para rodar inteira antes de cada commit. Se não roda, ela está grande demais ou acoplada demais à infra.
+- **NÃO FAÇA**: Conviver com teste intermitente. Conserte ou delete no mesmo trabalho: falha que o time aprende a ignorar destrói o valor de todas as outras.
+
+## Testabilidade é design
+
+- **FAÇA**: Projete fluxo crítico de negócio (pagamento, autenticação, precificação) para que um cenário completo seja reproduzível sem mock elaborado nem setup manual extenso.
+- **FAÇA**: Trate fluxo crítico difícil de testar de fora como sinal de acoplamento ruim: resolva o acoplamento, não desça de nível para contornar.
+- **FAÇA**: Declare em voz alta feature core sem teste de fora. É lacuna a registrar, não a compensar com uma pilha de testes de unidade.
 
 ## Evidência visual de execução
 
-Evidência visual do resultado rodando (**imagem ou vídeo**) é a prova, para quem pediu, de que o que foi solicitado existe e funciona. Sem ela, a entrega é só uma afirmação. Por isso ela é sempre **oferecida** no fecho da implementação; gerar ou dispensar é decisão do usuário.
+Evidência visual do resultado rodando (**imagem ou vídeo**) é a prova, para quem pediu, de que o que foi solicitado existe e funciona. Sem ela, a entrega é só uma afirmação.
 
-- **FAÇA**: Use a skill `test-evidence` na hora de capturar: ela traz a mecânica (Playwright, redação de segredo antes do print, o que conta como captura, delegação a subagente).
-- **FAÇA**: Ao fechar uma implementação (testes passando, antes de anunciar entrega, commit ou MR), **pergunte ao usuário** se ele quer gerar a evidência com a skill `test-evidence`. Rode só se ele pedir; silêncio ou "ok" não é "sim".
-- **FAÇA**: Quando o usuário pedir a evidência, antes de dizer que terminou liste `.evidence/` e confirme que há imagem ou vídeo cobrindo cada caminho prometido.
-- **NÃO FAÇA**: Apresentar diff, log de build, JSON salvo em arquivo ou saída transcrita **no lugar** da captura pedida: nada disso prova execução.
-- **NÃO FAÇA**: Criar suíte E2E de Playwright onde a stack não comporta: a evidência é obrigatória, o spec automatizado não.
+- **FAÇA**: Ao fechar uma implementação (testes passando, antes de anunciar entrega, commit ou MR), **pergunte ao usuário** se ele quer gerar a evidência. Rode só se ele pedir; silêncio ou "ok" não é "sim".
+- **FAÇA**: Se a skill `test-evidence` estiver disponível, use-a para a mecânica de captura. Se não estiver, capture com o que a stack oferecer (screenshot do navegador, gravação de tela, print do cliente HTTP) e combine com o usuário onde o arquivo mora.
+- **FAÇA**: Antes de dizer que terminou, confirme que há captura cobrindo cada caminho prometido.
+- **NÃO FAÇA**: Apresentar diff, log de build ou saída transcrita **no lugar** da captura pedida: nada disso prova execução.
+- **NÃO FAÇA**: Montar suíte E2E automatizada só para gerar evidência onde a stack não comporta. A evidência é obrigatória, o spec automatizado não.
 
-Se o usuário pediu a evidência e capturar for de fato impossível no ambiente, isso é um bloqueio a declarar em voz alta junto da entrega, não uma licença para substituir o formato por texto e seguir como se o pedido tivesse sido atendido.
+Se capturar for de fato impossível no ambiente, isso é bloqueio a declarar junto da entrega, não licença para trocar o formato por texto.
 
-## BDD documentado vira teste
+## O teste é a especificação do comportamento
 
-Cenário BDD documentado é critério de aceite, não texto decorativo. Se não existe teste correspondente, ninguém sabe se a doc ainda é verdade.
+Comportamento observável se registra em teste, não em prosa. Um cenário escrito em markdown não roda, não falha e não avisa quando deixa de ser verdade; o teste, sim.
 
-- **FAÇA**: Implemente um teste para todo cenário BDD documentado: o teste é a prova de que o cenário descreve o sistema real.
-- **FAÇA**: Ao mexer num cenário documentado, ajuste o teste correspondente no mesmo trabalho; ao mexer no teste, confira o cenário.
-- **FAÇA**: Se cenário e teste divergem, decida qual está errado antes de "consertar" qualquer um dos dois: pode ser doc desatualizada ou pode ser bug.
-- **NÃO FAÇA**: Documentar cenário de comportamento que você não pretende cobrir com teste: se não vale um teste, não vale um cenário.
-- **NÃO FAÇA**: Documentar cenário micro só para ter o par teste↔cenário; a correspondência vale nos dois sentidos: cenário fora do core não deveria existir, e por isso não gera teste.
+- **FAÇA**: Nomeie o teste pelo comportamento de negócio que ele protege, não pela função que ele chama. O nome é a documentação.
+- **FAÇA**: Ao encontrar cenário de comportamento documentado em prosa, converta em teste e apague o texto. Dois registros da mesma verdade divergem; o que roda é o que fica.
+- **NÃO FAÇA**: Escrever a descrição de um comportamento em doc esperando que ela substitua o teste. Doc cobre arquitetura, integração, capacidade e regra core (ver `rules/documentation.md`); comportamento é teste.
 
-Use a skill `live-docs bdd` para a convenção de rastreabilidade entre cenário e teste.
-
-O teste: cada teste deve responder "o que quebra, do ponto de vista do produto, se essa lógica falhar?". Se a resposta é "nada perceptível", o teste não paga o custo de manutenção.
+O teste do teste: se ele falhar amanhã, você consegue dizer o que o usuário perdeu? Se a resposta é "nada perceptível", delete.

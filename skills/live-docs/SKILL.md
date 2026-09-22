@@ -1,7 +1,7 @@
 ---
 name: live-docs
-description: Central documentation skill. Use when an implementation plan finishes, when an observable behavior changes (business rule, authorization, API contract, technical flow), when an architectural decision is made, when a contract or env var changes, when the repository lacks a macro view of the system, when auditing whether existing docs reflect the current codebase, or when migrating planning artifacts (specs, plans, issues, PRs) into structured documentation. Triggers on requests like "document this feature", "update the docs", "write the BDD for this", "record this decision as an ADR", "generate the architecture overview", "are the docs stale?", "migrate these specs into docs", and proactively after completing any change to observable behavior, even with no explicit request for documentation. Accepts a doc type as argument to focus on a single artifact.
-argument-hint: "[architecture|bdd|prd|adr]"
+description: Central documentation skill for the few docs that earn their maintenance cost: system architecture, external integrations, core business capabilities and non-obvious architectural decisions. Use when a core capability is added or changed, when an integration, entry point or datastore is added, when an architectural decision with real tradeoffs is made, when the repository lacks a macro view of the system, when auditing whether existing docs still match the code, or when migrating planning artifacts (specs, plans, issues, PRs) into structured documentation. Triggers on requests like "document this feature", "update the docs", "record this decision as an ADR", "generate the architecture overview", "are the docs stale?", "migrate these specs into docs". Do NOT use to document internal implementation detail, private helpers, refactor narratives or behavior already covered by tests. Accepts a doc type as argument to focus on a single artifact.
+argument-hint: "[architecture|prd|adr]"
 ---
 
 # Documentação Viva
@@ -12,19 +12,63 @@ atual, não à intenção original do design.
 **Princípio central:** docs descrevem o que o sistema *faz*, verificado no código. Descarte qualquer coisa que a spec
 planejou mas o código não entregou.
 
+## Escopo: o que merece doc
+
+Doc é código que ninguém compila: ela só se paga quando responde uma pergunta que o leitor não consegue responder
+lendo o repositório. Documentar demais gera o mesmo ruído que não documentar: o leitor deixa de confiar no conjunto
+porque não sabe qual parte ainda é verdade.
+
+Merece doc:
+
+- **Arquitetura do sistema** e seus limites: o que roda dentro, quem entra, por onde.
+- **Integrações externas**: com quem o sistema fala, por qual transporte, e o que acontece quando o outro lado falha.
+- **Capacidades**: o que o sistema entrega para o usuário, em linguagem de negócio.
+- **Regras de negócio core**: a regra que custa dinheiro, dado ou confiança quando violada.
+- **Peças críticas e invariantes não-óbvias**: o que quebra o sistema quando alguém mexe sem saber.
+- **Decisões arquiteturais com tradeoff real** (ADR).
+
+Não merece doc:
+
+- Detalhe de implementação interna, função privada, estrutura de pacote.
+- Narrativa de mudança ("antes era X, agora é Y"), post-mortem, passo-a-passo de refactor.
+- Cenário de comportamento em prosa (Dado/Quando/Então e afins). Comportamento se prova com teste; em markdown ele
+  apodrece em silêncio e passa a mentir com aparência de contrato. Se vale descrever, vale um teste no lugar.
+- Enumeração exaustiva de campo trivial, ou qualquer texto que repita o que o código já diz com clareza.
+
+Ao encontrar doc que caiu nessa segunda lista, **delete**. Apagar é entrega.
+
+## Artefato visual
+
+Uma imagem explica arquitetura melhor que mil palavras, mas uma imagem binária não tem diff, não tem revisão e
+envelhece sem ninguém notar.
+
+- **Padrão: diagrama como texto** (mermaid no próprio markdown). Versionável, revisável no MR, editável por quem
+  encostar no código.
+- **Binário (png, jpg, mp4) ou HTML só quando o texto não consegue expressar**: captura de UI real, gravação de fluxo,
+  desenho que nenhuma sintaxe de diagrama alcança. Isso é exceção, e custa peso no clone de todo mundo, para sempre.
+- **Antes de commitar o primeiro binário**, configure o repositório para arquivo grande e registre isso no
+  `.gitattributes`:
+
+  ```
+  git lfs track "docs/**/*.png"
+  git lfs track "docs/**/*.mp4"
+  ```
+
+  Sem LFS configurado, não commite o binário: avise o usuário e mantenha o diagrama em texto.
+- **Nunca** commite imagem que só reproduz o que uma tabela de cinco linhas já diz.
+
 ## Argumento: escopo por tipo
 
 `ARGUMENTS: $ARGUMENTS`
 
 | Argumento | O que fazer |
 |-----------|-------------|
-| vazio | **Todos os quatro tipos.** Percorra a documentação como um todo, sem escolher tipo por conta própria |
+| vazio | **Todos os três tipos.** Percorra a documentação como um todo, sem escolher tipo por conta própria |
 | `architecture` | Só `docs/architecture/overview.md` |
-| `bdd` | Só os `bdd.md` dos módulos afetados |
 | `prd` | Só os `prd.md` dos módulos afetados |
 | `adr` | Só os ADRs das decisões não-óbvias |
 
-**Sem argumento:** a doc inteira está no escopo. Passe pelos quatro tipos na ordem `architecture` → `prd` → `bdd` → `adr` e, para **cada um**, tome uma decisão explícita: criar, atualizar ou nada a fazer. Nenhum tipo é
+**Sem argumento:** a doc inteira está no escopo. Passe pelos três tipos na ordem `architecture` → `prd` → `adr` e, para **cada um**, tome uma decisão explícita: criar, atualizar ou nada a fazer. Nenhum tipo é
 pulado em silêncio: "nada a fazer" é uma conclusão que você registra, não uma omissão. Ao terminar, relate uma linha
 por tipo com o que aconteceu.
 
@@ -40,7 +84,6 @@ escrever:
 |------|-----------|-----------|
 | Arquitetura | `docs/architecture/overview.md` | [references/architecture.md](references/architecture.md) |
 | PRD | `docs/features/<modulo>/prd.md` | [references/prd.md](references/prd.md) |
-| BDD | `docs/features/<modulo>/bdd.md` | [references/bdd.md](references/bdd.md) |
 | ADR | `docs/adrs/NNN-<titulo>.md` | [references/adr.md](references/adr.md) |
 
 ## Estrutura de Pastas
@@ -54,7 +97,6 @@ docs/
   features/
     <modulo>/
       prd.md                      # Propósito de negócio e valor para o usuário
-      bdd.md                      # Comportamentos observáveis (Dado/Quando/Então)
       <outro>.md                  # Qualquer doc adicional (diagramas, runbook, etc.)
 ```
 
@@ -106,7 +148,7 @@ Da fonte, liste:
 
 Comece pelo topo: `docs/architecture/overview.md`. Se o artefato não existe, crie; se existe, atualize o que divergiu.
 
-Depois, para cada módulo afetado, na ordem: `prd.md` → `bdd.md` → ADRs.
+Depois, para cada módulo afetado, na ordem: `prd.md` → ADRs.
 
 Para cada artefato, leia o guideline correspondente na tabela acima antes de escrever.
 

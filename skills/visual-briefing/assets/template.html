@@ -1,0 +1,507 @@
+<!--
+  TEMPLATE visual-briefing.
+  Reaproveite sem mudar: <link> das fontes, <style> inteiro (tokens, componentes, classes do SVG),
+  o seletor .lens e o <script> do fim.
+  Troque: <title>, links do .nav, todo o conteúdo de <main> e os rótulos de interface
+  (nav, lente, aria-label, eyebrows) para a língua do usuário.
+  Texto entre [colchetes] é slot: substitua por fato levantado ou apague o elemento.
+  Mantenha só as seções que o assunto tem.
+  Componentes (classe → uso):
+    .hero .tags .stats        tese + contexto + 3-4 números reais
+    .ba (.before/.after)      antes → depois; sem mudança: problema → solução
+    .diagram svg + .legend    arquitetura: atores → interfaces → serviços → externos
+    .flow .step               sequência real e ordenada (o número carrega informação)
+    .life .pill               estados/ciclo de vida do domínio
+    .grid .box                um card por sistema/recurso: h3 + .biz-line + detalhe .tech
+    .chips .chip / table      nomes técnicos curtos / interfaces, comandos, tabelas
+    .diffbar .drow            composição de uma magnitude (linhas, custo, volume)
+    .risks .risk .sev         riscos: .h alta, .m média, .l baixa, .doc documentação
+    .deliveries .delivery     status por sistema/entrega
+  Lente: qualquer elemento com class="tech" some na visão de negócio.
+-->
+<title>[Nome do assunto]</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#F2F4F8; --surface:#FFFFFF; --sunk:#E8ECF3; --ink:#121A26; --muted:#5A6477; --line:#D8DEE8;
+  --accent:#3052DD; --accent-soft:#E3E9FD;
+  --draft:#B77A06; --draft-soft:#FBF0D9;
+  --ok:#1C845A; --ok-soft:#DDF3E8;
+  --bad:#BF3434; --bad-soft:#FBE3E3;
+  --mid:#C2621B; --mid-soft:#FCE9DA;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#0D121A; --surface:#151C27; --sunk:#1C2533; --ink:#E5E9F0; --muted:#94A0B3; --line:#283243;
+    --accent:#7E97FF; --accent-soft:#1E2A52;
+    --draft:#E9B44C; --draft-soft:#3A2C0F;
+    --ok:#4FC98F; --ok-soft:#10301F;
+    --bad:#F07474; --bad-soft:#3A1717;
+    --mid:#F29A5A; --mid-soft:#3A2412;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0D121A; --surface:#151C27; --sunk:#1C2533; --ink:#E5E9F0; --muted:#94A0B3; --line:#283243;
+  --accent:#7E97FF; --accent-soft:#1E2A52;
+  --draft:#E9B44C; --draft-soft:#3A2C0F;
+  --ok:#4FC98F; --ok-soft:#10301F;
+  --bad:#F07474; --bad-soft:#3A1717;
+  --mid:#F29A5A; --mid-soft:#3A2412;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font:15px/1.55 var(--body);margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:0 80px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(34px,6vw,56px);font-weight:700;letter-spacing:-.02em}
+h2{font-size:28px;font-weight:700;letter-spacing:-.01em}
+h3{font-size:18px;font-weight:600}
+p{margin:0}
+code,.mono{font-family:var(--mono);font-size:.86em}
+code{background:var(--sunk);padding:.1em .35em;border-radius:4px;overflow-wrap:anywhere}
+.muted{color:var(--muted)}
+.eyebrow{font:500 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+
+/* barra superior */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--ground) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;gap:16px;align-items:center;justify-content:space-between;padding-block:10px;flex-wrap:wrap}
+.nav{display:flex;gap:4px;flex-wrap:wrap}
+.nav a{color:var(--muted);text-decoration:none;font-size:13px;padding:6px 10px;border-radius:6px}
+.nav a:hover,.nav a:focus-visible{color:var(--ink);background:var(--sunk);outline:none}
+.lens{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+.lens button{font:500 13px var(--body);border:0;background:none;color:var(--muted);padding:7px 14px;cursor:pointer}
+.lens button[aria-pressed="true"]{background:var(--ink);color:var(--ground)}
+.lens button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+body.biz .tech{display:none}
+
+section{padding-top:64px;display:grid;gap:22px;scroll-margin-top:60px}
+.lead{max-width:62ch;color:var(--muted);font-size:16px}
+
+/* hero */
+.hero{padding-top:48px;display:grid;gap:20px}
+.hero .sub{font-size:18px;max-width:58ch;color:var(--muted)}
+.tags{display:flex;gap:8px;flex-wrap:wrap}
+.tag{font:500 12px var(--mono);padding:4px 9px;border-radius:999px;background:var(--sunk);color:var(--muted)}
+.tag.wip{background:var(--draft-soft);color:var(--draft)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;gap:2px}
+.stat b{font:700 30px/1.1 var(--display);font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--muted)}
+.neg{color:var(--bad)} .pos{color:var(--ok)}
+
+/* antes / depois */
+.ba{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:stretch}
+.ba .col{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:12px;align-content:start}
+.ba .col.after{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.ba .arrow{align-self:center;font:700 28px var(--display);color:var(--accent)}
+.ba ul{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.ba li{display:grid;grid-template-columns:22px 1fr;gap:8px;font-size:14px}
+.ba li i{font-style:normal;font-weight:700;text-align:center}
+.before li i{color:var(--bad)} .after li i{color:var(--ok)}
+
+/* diagrama */
+.diagram{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;overflow-x:auto}
+/* classes do SVG: compartilhadas por todos os diagramas da página */
+.diagram .n{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+.diagram .nb{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5}
+.diagram .ni{fill:var(--sunk);stroke:none}
+.diagram .t{fill:var(--ink);font:600 14px var(--body)}
+.diagram .s{fill:var(--muted);font:12px var(--body)}
+.diagram .c{fill:var(--ink);font:500 11.5px var(--mono)}
+.diagram .e{stroke:var(--accent);stroke-width:2;fill:none}
+.diagram .ed{stroke:var(--draft);stroke-width:2;fill:none;stroke-dasharray:6 5}
+.diagram .em{stroke:var(--muted);stroke-width:1.5;fill:none}
+.diagram .lbl{fill:var(--muted);font:500 11px var(--mono)}
+.diagram .lbd{fill:var(--draft);font:600 11px var(--mono)}
+.diagram svg{display:block;min-width:900px;width:100%;height:auto}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;gap:8px;align-items:center}
+.sw{width:22px;height:0;border-top:2px solid var(--accent);display:inline-block}
+.sw.dash{border-top-style:dashed;border-color:var(--draft)}
+.sw.sec{border-color:var(--muted)}
+
+/* pipeline */
+.flow{display:grid;gap:0;counter-reset:s}
+.step{display:grid;grid-template-columns:44px 1fr;gap:14px;position:relative;padding-bottom:18px}
+.step::before{counter-increment:s;content:counter(s);width:32px;height:32px;border-radius:50%;background:var(--accent);color:var(--surface);display:grid;place-items:center;font:600 14px var(--mono);z-index:1}
+.step::after{content:"";position:absolute;left:15px;top:32px;bottom:0;width:2px;background:var(--line)}
+.step:last-child::after{display:none}
+.step .card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:6px}
+.step .who{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.call{font:13px var(--mono);background:var(--sunk);border-radius:6px;padding:6px 10px;overflow-x:auto;white-space:nowrap}
+.call .m{color:var(--accent);font-weight:600}
+
+/* grid de cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:12px;align-content:start}
+.box .biz-line{font-size:14px;color:var(--muted)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font:12px var(--mono);padding:3px 8px;border-radius:6px;background:var(--sunk)}
+.chip.a{background:var(--accent-soft);color:var(--accent)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+td{padding:6px 8px;border-top:1px solid var(--line);vertical-align:top}
+td:first-child{font-family:var(--mono);color:var(--accent);white-space:nowrap;width:1%;font-weight:500}
+td code{background:none;padding:0}
+.tablewrap{overflow-x:auto}
+
+/* ciclo de versão */
+.life{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pill{font:500 12px var(--mono);padding:4px 10px;border-radius:999px;border:1px solid}
+.pill.d{color:var(--draft);border-color:var(--draft);background:var(--draft-soft)}
+.pill.p{color:var(--ok);border-color:var(--ok);background:var(--ok-soft)}
+.pill.x{color:var(--muted);border-color:var(--line);background:var(--sunk)}
+.life .to{color:var(--muted);font-size:12px}
+
+/* diff */
+.diffbar{display:flex;height:34px;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.diffbar div{min-width:0}
+.diffrows{display:grid;gap:8px}
+.drow{display:grid;grid-template-columns:14px 1fr auto;gap:10px;align-items:center;font-size:14px}
+.drow .dot{width:12px;height:12px;border-radius:3px}
+.drow b{font:500 13px var(--mono);font-variant-numeric:tabular-nums}
+
+/* riscos */
+.risks{display:grid;gap:10px}
+.risk{display:grid;grid-template-columns:86px 1fr;gap:14px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.sev{font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:4px 0;border-radius:6px;text-align:center}
+.sev.h{background:var(--bad-soft);color:var(--bad)}
+.sev.m{background:var(--mid-soft);color:var(--mid)}
+.sev.l{background:var(--sunk);color:var(--muted)}
+.sev.doc{background:var(--accent-soft);color:var(--accent)}
+.risk p{font-size:14px}
+.risk p + p{color:var(--muted);font-size:13px;margin-top:2px}
+
+/* status MRs */
+.deliveries{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.delivery{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:8px}
+.delivery .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.delivery ul{margin:0;padding-left:18px;font-size:13px;display:grid;gap:3px}
+
+@media (max-width:720px){
+  .ba{grid-template-columns:1fr}
+  .ba .arrow{transform:rotate(90deg);justify-self:center}
+  .risk{grid-template-columns:1fr}
+  .sev{justify-self:start;padding:4px 10px}
+  .nav{display:none}
+}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+
+<header class="bar">
+  <div class="wrap">
+    <nav class="nav" aria-label="Seções">
+      <a href="#mudanca">Mudança</a>
+      <a href="#arquitetura">Arquitetura</a>
+      <a href="#fluxo">Fluxo</a>
+      <a href="#sistema-a">[Sistema A]</a>
+      <a href="#sistema-b">[Sistema B]</a>
+      <a href="#composicao">Composição</a>
+      <a href="#riscos">Riscos</a>
+      <a href="#status">Status</a>
+    </nav>
+    <div class="lens" role="group" aria-label="Nível de detalhe">
+      <button type="button" id="lens-biz" data-lens="biz" aria-pressed="false">Negócio</button>
+      <button type="button" id="lens-tech" data-lens="tech" aria-pressed="true">Técnico</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- COMPONENTE .hero -->
+  <div class="hero">
+    <div class="tags">
+      <span class="tag">[referência da entrega]</span>
+      <span class="tag">[sistema · versão ou ramo]</span>
+      <span class="tag wip">[estado: em andamento]</span>
+    </div>
+    <h1>[A tese: o que muda ou para que serve, numa frase]</h1>
+    <p class="sub">[Uma ou duas frases de contexto: para quem é e o ganho principal.]</p>
+    <div class="stats">
+      <div class="stat"><b>[N]</b><span>[o que o número mede]</span></div>
+      <div class="stat"><b class="neg">[−N]</b><span>[redução: linhas, custo, etapas]</span></div>
+      <div class="stat"><b class="pos">[+N]</b><span>[acréscimo]</span></div>
+      <div class="stat"><b>[N]</b><span>[sistemas envolvidos]</span></div>
+    </div>
+  </div>
+
+  <!-- COMPONENTE .ba — antes/depois (sem mudança: problema/solução) -->
+  <section id="mudanca">
+    <div class="eyebrow">O que mudou</div>
+    <h2>Antes e depois</h2>
+    <div class="ba">
+      <div class="col before">
+        <h3>Antes</h3>
+        <ul>
+          <li><i>✕</i><span>[limitação percebida por quem usa]</span></li>
+          <li><i>✕</i><span>[custo ou atrito do jeito antigo]</span></li>
+          <li class="tech"><i>✕</i><span>[detalhe técnico do jeito antigo, com <code>nome_real</code>]</span></li>
+        </ul>
+      </div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="col after">
+        <h3>Depois</h3>
+        <ul>
+          <li><i>✓</i><span>[capacidade nova, em termos de negócio]</span></li>
+          <li><i>✓</i><span>[atrito que deixou de existir]</span></li>
+          <li class="tech"><i>✓</i><span>[detalhe técnico do jeito novo, com <code>nome_real</code>]</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPONENTE .diagram — colunas: atores → interfaces → serviços → externos -->
+  <section id="arquitetura">
+    <div class="eyebrow">Arquitetura</div>
+    <h2>Quem fala com quem</h2>
+    <p class="lead">[Uma frase com o papel de cada parte.]</p>
+    <div class="diagram">
+      <svg viewBox="0 0 960 440" role="img" aria-label="[Descrição textual do diagrama: quem chama quem e para quê.]">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/></marker>
+          <marker id="ard" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--draft)"/></marker>
+          <marker id="arm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker>
+        </defs>
+
+        <!-- coluna 1: atores -->
+        <rect class="n" x="16" y="70" width="130" height="56" rx="10"/>
+        <text class="t" x="81" y="95" text-anchor="middle">[Ator 1]</text>
+        <text class="s" x="81" y="113" text-anchor="middle">[papel]</text>
+
+        <rect class="n" x="16" y="300" width="130" height="56" rx="10"/>
+        <text class="t" x="81" y="325" text-anchor="middle">[Ator 2]</text>
+        <text class="s" x="81" y="343" text-anchor="middle">[papel]</text>
+
+        <!-- coluna 2: interfaces -->
+        <rect class="n" x="200" y="30" width="230" height="150" rx="12"/>
+        <text class="t" x="216" y="56">[Interface A]</text>
+        <rect class="ni" x="216" y="70" width="96" height="30" rx="6"/><text class="c" x="264" y="89" text-anchor="middle">[parte]</text>
+        <rect class="ni" x="318" y="70" width="96" height="30" rx="6"/><text class="c" x="366" y="89" text-anchor="middle">[parte]</text>
+        <rect class="ni" x="216" y="108" width="198" height="56" rx="6" style="stroke:var(--draft);stroke-width:1.5;stroke-dasharray:4 4"/>
+        <text class="c" x="315" y="131" text-anchor="middle">[parte alternativa]</text>
+        <text class="s" x="315" y="150" text-anchor="middle">[quando é usada]</text>
+
+        <rect class="n" x="200" y="262" width="230" height="140" rx="12"/>
+        <text class="t" x="216" y="288">[Interface B]</text>
+        <rect class="ni" x="216" y="300" width="198" height="36" rx="6"/>
+        <text class="c" x="315" y="323" text-anchor="middle">[parte]</text>
+        <rect class="nb" x="216" y="344" width="198" height="42" rx="6"/>
+        <text class="c" x="315" y="362" text-anchor="middle">[parte em foco]</text>
+        <text class="s" x="315" y="378" text-anchor="middle">[interface exposta]</text>
+
+        <!-- coluna 3: serviço em foco -->
+        <rect class="n" x="520" y="30" width="250" height="300" rx="12"/>
+        <text class="t" x="536" y="56">[Serviço]</text>
+        <rect class="nb" x="536" y="70" width="104" height="46" rx="6"/>
+        <text class="c" x="588" y="90" text-anchor="middle">[módulo 1]</text><text class="s" x="588" y="106" text-anchor="middle">[o que guarda]</text>
+        <rect class="nb" x="650" y="70" width="104" height="46" rx="6"/>
+        <text class="c" x="702" y="90" text-anchor="middle">[módulo 2]</text><text class="s" x="702" y="106" text-anchor="middle">[o que guarda]</text>
+        <path class="em" d="M640,93 L648,93" marker-end="url(#arm)"/>
+        <rect class="ni" x="536" y="128" width="218" height="40" rx="6"/>
+        <text class="c" x="645" y="146" text-anchor="middle">[componente de apoio]</text>
+        <text class="s" x="645" y="161" text-anchor="middle">[função]</text>
+        <rect class="ni" x="536" y="178" width="218" height="40" rx="6"/>
+        <text class="c" x="645" y="196" text-anchor="middle">[componente de apoio]</text>
+        <text class="s" x="645" y="211" text-anchor="middle">[função]</text>
+        <rect class="ni" x="536" y="228" width="218" height="40" rx="6"/>
+        <text class="c" x="645" y="246" text-anchor="middle">[componente de apoio]</text>
+        <text class="s" x="645" y="261" text-anchor="middle">[função]</text>
+        <rect class="ni" x="536" y="278" width="218" height="38" rx="6"/>
+        <text class="c" x="645" y="301" text-anchor="middle">[armazenamento]</text>
+
+        <!-- coluna 4: externos -->
+        <rect class="n" x="820" y="200" width="124" height="70" rx="10"/>
+        <text class="t" x="882" y="228" text-anchor="middle">[Externo]</text>
+        <text class="s" x="882" y="246" text-anchor="middle">[o que provê]</text>
+
+        <rect class="n" x="520" y="364" width="250" height="56" rx="10"/>
+        <text class="t" x="645" y="389" text-anchor="middle">[Identidade / apoio]</text>
+        <text class="s" x="645" y="407" text-anchor="middle">[mecanismo]</text>
+
+        <!-- ligações: .e principal, .ed alternativa, .em autenticação/referência -->
+        <path class="e" d="M146,98 L198,98" marker-end="url(#ar)"/>
+        <path class="e" d="M146,328 L198,328" marker-end="url(#ar)"/>
+        <text class="lbl" x="150" y="320">[entrada]</text>
+
+        <path class="e" d="M430,80 L518,80" marker-end="url(#ar)"/>
+        <text class="lbl" x="436" y="72">[operação]</text>
+
+        <path class="ed" d="M315,164 L315,260" marker-end="url(#ard)"/>
+        <text class="lbd" x="322" y="226">[caminho alternativo]</text>
+
+        <path class="e" d="M414,352 C470,352 470,250 518,250" marker-end="url(#ar)"/>
+        <text class="lbl" x="440" y="296">[operação]</text>
+
+        <path class="em" d="M414,378 C470,378 480,392 518,392" marker-end="url(#arm)"/>
+        <text class="lbl" x="436" y="410">[credencial]</text>
+
+        <path class="e" d="M770,236 L818,236" marker-end="url(#ar)"/>
+        <text class="lbl" x="772" y="228">[operação]</text>
+      </svg>
+    </div>
+    <div class="legend">
+      <span><i class="sw"></i>fluxo principal</span>
+      <span><i class="sw dash"></i>caminho alternativo</span>
+      <span><i class="sw sec"></i>autenticação / referência</span>
+    </div>
+  </section>
+
+  <!-- COMPONENTE .flow — só para sequência real; o contador CSS numera -->
+  <section id="fluxo">
+    <div class="eyebrow">Uma execução</div>
+    <h2>[Do gatilho ao resultado]</h2>
+    <p class="lead">[Qual caso real o fluxo percorre.]</p>
+    <div class="flow">
+      <div class="step"><div class="card">
+        <span class="who">[quem age]</span>
+        <p>[o que acontece, em termos de negócio]</p>
+        <div class="call tech">[chamada, comando ou evento exato]</div>
+      </div></div>
+      <div class="step"><div class="card">
+        <span class="who">[origem → destino]</span>
+        <p>[o que acontece]</p>
+        <div class="call tech"><span class="m">[VERBO]</span> [alvo] → [resultado]</div>
+      </div></div>
+      <div class="step"><div class="card">
+        <span class="who">[quem age]</span>
+        <p>[o resultado final percebido]</p>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- COMPONENTE .life + .grid .box — briefing de um sistema -->
+  <section id="sistema-a">
+    <div class="eyebrow">[Sistema A]</div>
+    <h2>[O que este sistema passou a fazer]</h2>
+    <div class="life">
+      <span class="pill d">[estado inicial]</span><span class="to">[transição] →</span>
+      <span class="pill p">[estado ativo]</span><span class="to">[transição] →</span>
+      <span class="pill x">[estado final]</span>
+    </div>
+    <div class="grid">
+      <div class="box">
+        <h3>[Recurso ou capacidade]</h3>
+        <p class="biz-line">[Para que serve, em uma frase.]</p>
+        <div class="chips tech"><span class="chip a">[campo-chave]</span><span class="chip a">[campo-chave]</span><span class="chip">[regra]</span></div>
+        <div class="tablewrap tech"><table>
+          <tr><td>[grupo]</td><td><code>[interface]</code> · <code>[interface]</code></td></tr>
+          <tr><td>[grupo]</td><td><code>[interface]</code></td></tr>
+          <tr><td>[regra]</td><td>[validação ou restrição]</td></tr>
+        </table></div>
+      </div>
+      <div class="box">
+        <h3>[Recurso ou capacidade]</h3>
+        <p class="biz-line">[Para que serve, em uma frase.]</p>
+        <div class="tablewrap tech"><table>
+          <tr><td>[grupo]</td><td><code>[interface]</code></td></tr>
+          <tr><td>[grupo]</td><td><code>[interface]</code></td></tr>
+        </table></div>
+      </div>
+      <div class="box tech">
+        <h3>Suporte</h3>
+        <div class="tablewrap"><table>
+          <tr><td>[armazenamento]</td><td><code>[tabela, fila, arquivo]</code></td></tr>
+          <tr><td>[acesso]</td><td>[como o chamador se identifica]</td></tr>
+        </table></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPONENTE .grid .box — briefing de outro sistema -->
+  <section id="sistema-b">
+    <div class="eyebrow">[Sistema B]</div>
+    <h2>[O papel dele neste assunto]</h2>
+    <div class="grid">
+      <div class="box">
+        <h3>[Tela, comando ou capacidade]</h3>
+        <p class="biz-line">[O que a pessoa consegue fazer.]</p>
+        <ul class="tech" style="margin:0;padding-left:18px;font-size:14px;display:grid;gap:4px">
+          <li>[detalhe técnico com <code>nome_real</code>]</li>
+          <li>[detalhe técnico]</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h3>[Base compartilhada]</h3>
+        <p class="biz-line">[O que foi reaproveitado entre partes.]</p>
+        <div class="chips tech"><span class="chip">[componente]</span><span class="chip">[componente]</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPONENTE .diffbar + .drow — flex = valor real de cada parte -->
+  <section id="composicao">
+    <div class="eyebrow">[Magnitude]</div>
+    <h2>[O que compõe o total]</h2>
+    <p class="lead">[A leitura que importa sobre essa composição.]</p>
+    <div class="diffbar" role="img" aria-label="[Total por categoria]">
+      <div style="flex:4;background:var(--muted)" title="[categoria]: [valor]"></div>
+      <div style="flex:2;background:var(--accent)" title="[categoria]: [valor]"></div>
+      <div style="flex:1;background:var(--bad)" title="[categoria]: [valor]"></div>
+      <div style="flex:1;background:var(--line)" title="[categoria]: [valor]"></div>
+    </div>
+    <div class="diffrows">
+      <div class="drow"><i class="dot" style="background:var(--muted)"></i><span>[categoria]</span><b>[valor]</b></div>
+      <div class="drow"><i class="dot" style="background:var(--accent)"></i><span>[categoria]</span><b>[valor]</b></div>
+      <div class="drow"><i class="dot" style="background:var(--bad)"></i><span>[categoria]</span><b>[valor]</b></div>
+      <div class="drow"><i class="dot" style="background:var(--line)"></i><span>[categoria]</span><b>[valor]</b></div>
+    </div>
+  </section>
+
+  <!-- COMPONENTE .risks — do mais grave ao menos grave -->
+  <section id="riscos">
+    <div class="eyebrow">Atenção</div>
+    <h2>Riscos e pendências</h2>
+    <div class="risks">
+      <div class="risk"><span class="sev h">Alta</span><div>
+        <p><b>[Risco em uma frase.]</b> [Impacto para o negócio.]</p>
+        <p class="tech">[Causa técnica, com <code>nome_real</code>.]</p>
+      </div></div>
+      <div class="risk"><span class="sev m">Média</span><div>
+        <p><b>[Risco.]</b> [Impacto.] [marque "a verificar" se não confirmado]</p>
+      </div></div>
+      <div class="risk tech"><span class="sev l">Baixa</span><div>
+        <p><b>[Detalhe técnico menor.]</b></p>
+      </div></div>
+      <div class="risk"><span class="sev doc">Doc</span><div>
+        <p><b>[Documentação ausente ou desalinhada.]</b></p>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- COMPONENTE .deliveries — status por sistema ou entrega -->
+  <section id="status">
+    <div class="eyebrow">Onde cada peça está</div>
+    <h2>Status</h2>
+    <div class="deliveries">
+      <div class="delivery">
+        <div class="top"><h3>[Sistema A]</h3><span class="pill p">[concluído]</span></div>
+        <ul><li>[o que já está entregue]</li><li class="tech">[referência técnica]</li></ul>
+      </div>
+      <div class="delivery">
+        <div class="top"><h3>[Sistema B]</h3><span class="pill d">[em andamento]</span></div>
+        <ul><li>[o que falta]</li><li>[dependência]</li></ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  var btns = document.querySelectorAll('.lens button');
+  function set(l){
+    document.body.classList.toggle('biz', l === 'biz');
+    btns.forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.lens === l)); });
+    try { localStorage.setItem('lens', l); } catch(e){}
+  }
+  btns.forEach(function(b){ b.addEventListener('click', function(){ set(b.dataset.lens); }); });
+  var saved = null;
+  try { saved = localStorage.getItem('lens'); } catch(e){}
+  set(saved === 'biz' ? 'biz' : 'tech');
+})();
+</script>
