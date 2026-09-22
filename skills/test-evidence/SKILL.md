@@ -1,6 +1,6 @@
 ---
 name: test-evidence
-description: Use when about to claim a delivery is done, finished, working or ready (an endpoint, page, flow, fix or feature someone else will check), and visual proof of it running has not been captured yet. Also use when choosing how to capture (Playwright MCP, Swagger, Postman, DevTools, curl in a terminal), when redacting secrets or personal data before a screenshot, when delegating capture to a subagent, or when verifying that .evidence/ covers every promised path. Triggers on "evidência", "evidência visual", "print", "screenshot", "prova que funciona", "capturar a tela", "terminei", "está pronto".
+description: Use when about to claim a delivery is done, finished, working or ready (an endpoint, page, flow, fix or feature someone else will check), and visual proof of it running has not been captured yet. Also use when choosing how to capture (playwright-skill, Swagger, Postman, DevTools, curl in a terminal), when redacting secrets or personal data before a screenshot, when delegating capture to a subagent, or when verifying that .evidence/ covers every promised path. Triggers on "evidência", "evidência visual", "print", "screenshot", "prova que funciona", "capturar a tela", "terminei", "está pronto".
 ---
 
 # Evidência de Teste
@@ -18,7 +18,7 @@ afirmação. Se os arquivos entregues não incluem pelo menos um `.png`, `.jpg`,
 |---|---|
 | Print do Swagger / Postman / Insomnia / DevTools | `.json` de resposta salvo na pasta |
 | Print do terminal com o comando e a resposta visíveis | Bloco de log colado na resposta do chat |
-| Screenshot do Playwright MCP | Saída de `curl` transcrita sem o print |
+| Screenshot capturado via skill playwright-skill | Saída de `curl` transcrita sem o print |
 | Vídeo do fluxo (`.webm`, `.mp4`) | Diff, log de build, descrição do que foi feito |
 
 A ferramenta é livre; o formato não. Rodar `curl` é legítimo para *disparar*, mas entregar o texto dele
@@ -31,8 +31,8 @@ resolve; o que não pode é o custo virar motivo para não haver imagem nenhuma.
 ## Como capturar
 
 1. **Redija primeiro.** Segredo e dado pessoal saem *antes* do disparo (ver seção abaixo).
-2. **Exercite o fluxo no sistema real.** Com tela, o MCP do Playwright é a primeira opção: navegue,
-   preencha, dispare a request, leia rede e console, tire o screenshot. Sem tela, ele também serve
+2. **Exercite o fluxo no sistema real.** Com tela, a skill playwright-skill é a primeira opção: navegue,
+   preencha, dispare a request, leia rede e console, tire o screenshot. Sem tela, ela também serve
    para disparar a chamada, assim como Swagger ou `curl` num terminal fotografado.
 3. **Capture o caminho feliz.** E quando o pedido envolve erro ou validação, o caminho de erro
    também.
