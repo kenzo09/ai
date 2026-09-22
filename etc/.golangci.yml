@@ -1,0 +1,96 @@
+version: "2"
+
+formatters:
+  enable:
+    - gofmt
+    - gci
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+
+run:
+  timeout: 10m
+
+linters:
+  default: none
+  enable:
+    - errcheck
+    - goconst
+    - gosec
+    - perfsprint
+    - staticcheck
+    - govet
+    - unused
+    - errorlint
+    - nilerr
+    - forcetypeassert
+    - makezero
+    - bodyclose
+    - sqlclosecheck
+    - rowserrcheck
+    - noctx
+    - containedctx
+    - fatcontext
+    - predeclared
+    - canonicalheader
+    - dupl
+    - unparam
+    - revive
+    - gocritic
+    - usestdlibvars
+    - intrange
+    - copyloopvar
+    - misspell
+    - thelper
+    - tparallel
+    - sloglint
+    - nolintlint
+    - ineffassign
+
+  settings:
+    errcheck:
+      check-type-assertions: true
+      check-blank: true
+      # Deferred cleanups whose failure has no caller left to report to (`defer rows.Close()`,
+      # `defer tx.Rollback()`), and a ResponseWriter that fails to write has no channel left
+      # to say so. Anything not listed is handled at the call site.
+      exclude-functions:
+        - (*database/sql.Rows).Close
+        - (*database/sql.Tx).Rollback
+        - (github.com/jackc/pgx/v5.Tx).Rollback
+        - (io.Closer).Close
+        - (net/http.ResponseWriter).Write
+    sloglint:
+      no-mixed-args: true
+      kv-only: true
+      static-msg: true
+      key-naming-case: snake
+    revive:
+      # Listing any rule under `rules` makes revive run ONLY the listed ones; this keeps the
+      # default set alive and adds the ones below, which are not part of it.
+      enable-default-rules: true
+      rules:
+        - name: early-return
+        - name: max-control-nesting
+        - name: unnecessary-if
+        - name: identical-branches
+        - name: if-return
+    nolintlint:
+      # Every nolint names its linter and says why; otherwise suppressing beats fixing.
+      require-explanation: true
+      require-specific: true
+      allow-unused: false
+
+  exclusions:
+    rules:
+      # Two revive default rules would demand a doc comment on every exported symbol and
+      # package; enable them back if the repo wants that discipline.
+      - linters: [revive]
+        text: "^(exported|package-comments):"
+      # Table-driven suites repeat strings and ignore returns by nature. forcetypeassert is
+      # excluded here too: `v := x.(T)` without `ok` is idiomatic in a test, since a mismatch
+      # panics and fails the test with a clear stack, which is the desired outcome.
+      - path: _test\.go$
+        linters: [dupl, funlen, gosec, containedctx, goconst, errcheck, noctx, gocognit, unparam, forcetypeassert]
