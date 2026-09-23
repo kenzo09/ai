@@ -13,6 +13,7 @@ Relatório ao chamador e entradas no handoff em pt-BR. Código, comentários nov
 
 ## Quando invocar
 
+- **Marcado no handoff.** O handoff tem uma coluna `✓` com checkbox por linha. Quando o usuário diz "aplica o que está marcado" — ou não delimita a seleção de outra forma — a seleção é exatamente as linhas com `[x]`; linhas com `[ ]` não são tocadas nem reportadas.
 - **Um item.** O usuário nomeia uma única linha ("o item do `<símbolo>`", "a linha 3 do bloco delete de Simples"). Você aplica aquela linha, roda o comando de verificação, atualiza o handoff, reporta.
 - **Um bloco ou um nível.** "Executa o bloco Simples", "só os `delete` do Médio". Você aplica cada linha da seleção na ordem em que aparecem, verifica uma vez ao final, atualiza o handoff.
 - **Tudo.** "Aplica o handoff inteiro". Você aplica Simples, depois Médio, depois Complexo — mas Complexo só nas linhas cuja decisão o usuário já declarou no pedido ou no próprio handoff. Linhas ainda aguardando decisão são reportadas como bloqueadas, nunca puladas em silêncio.
@@ -49,6 +50,7 @@ Nunca declare uma linha concluída sem a saída do comando em mãos.
 ## Atualizando o handoff
 
 Depois de cada lote, edite o arquivo de handoff no lugar:
+- Escreva a coluna **Status** de cada linha que você tocou: `Concluído` quando aplicada, `Parcial: <o que ficou de fora>`, `Revertido`, `Não se aplica mais` ou `Falha: <motivo em uma linha>`. Linhas não selecionadas ficam `Pendente`. Não desmarque nem marque a coluna `✓`; ela é do usuário.
 - Prefixe a célula **Onde** de cada linha aplicada com `✅ `, cada linha aplicada só em parte com `🟡 ` (e diga em Progresso o que ficou de fora e por quê), cada linha revertida com `↩️ `, cada linha que não se aplica mais com `⏭️ `.
 - Acrescente ou estenda uma seção `## Progresso` no final, com uma linha por lote: data, seleção aplicada, comando de verificação e resultado, linhas bloqueadas com a pergunta pendente.
 Não reescreva nem reordene mais nada no handoff.

@@ -1,6 +1,6 @@
 ---
 name: parallel-batches
-description: Use after an implementation plan is written and approved, to execute it with the maximum number of subagents working at the same time instead of one implementer at a time. Maps task dependencies, groups independent tasks into parallel batches and drives the dispatch as tech lead. Triggers on "roda o plano em paralelo", "paraleliza o plano", "quebra em lotes", "quantos agentes der", "executa em lote", "não quero um agente por vez", "run the plan in parallel". Do not use for a trivial change or a plan with fewer than three tasks: dispatch directly.
+description: Use after an implementation plan is written and approved, to execute it with the maximum number of subagents working at the same time instead of one implementer at a time. Maps task dependencies, groups independent tasks into parallel batches and drives the dispatch as tech lead. Triggers on "roda o plano em paralelo", "paraleliza o plano", "quebra em lotes", "quantos agentes der", "executa em lote", "não quero um agente por vez", "run the plan in parallel". Do not use for a trivial change or a plan with fewer than three tasks; dispatch directly.
 ---
 
 # Execução do plano em lotes paralelos

@@ -1,6 +1,6 @@
 ---
 name: split-merges
-description: Use when a feature branch (or a set of sibling-repo branches sharing one ticket) grew too large to review as one merge request and must be split into smaller, independently mergeable MRs, or when a previous split is in progress and the next slice must be cut. Triggers on "quebrar em MRs menores", "separar esse WIP", "dividir a branch", "MR grande demais", "split this branch", "o diff está gigante", and on any diff stat with hundreds of files against the base branch. Do not use for a small single-topic branch: open the MR directly.
+description: Use when a feature branch (or a set of sibling-repo branches sharing one ticket) grew too large to review as one merge request and must be split into smaller, independently mergeable MRs, or when a previous split is in progress and the next slice must be cut. Triggers on "quebrar em MRs menores", "separar esse WIP", "dividir a branch", "MR grande demais", "split this branch", "o diff está gigante", and on any diff stat with hundreds of files against the base branch. Do not use for a small single-topic branch; open the MR directly.
 ---
 
 # Dividir branch grande em MRs pequenos

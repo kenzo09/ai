@@ -61,9 +61,17 @@ Estrutura, nesta ordem:
 
 1. `# Handoff — Simplificação de <branch> (<repo>)`
 2. `## Contexto` — o que foi revisado (branch, range de commits ou working tree, contagem de arquivos/linhas), o plano ou spec de origem (só o caminho, não duplique o conteúdo), as palavras do próprio usuário sobre o motivo, o diagnóstico em um parágrafo (normalmente: qual módulo foi copiado de qual, com os números verificados do `diff` numa tabela pequena), o total de economia possível e links para os handoffs irmãos quando vários repos foram revisados.
-3. `## Regras` — nunca commitar sem instrução explícita e o formato de mensagem de commit que o projeto usa; mudanças cirúrgicas apenas; o(s) comando(s) exato(s) de verificação daquele repo; quais blocos exigem decisão do usuário antes de começar; dependências entre repos marcadas com uma tag com o nome do repositório dependido, como **[nome-do-repo]**.
+3. `## Regras` — o executor só aplica os itens com `[x]` na coluna ✓ e atualiza a coluna Status de cada linha que tocar; nunca commitar sem instrução explícita e o formato de mensagem de commit que o projeto usa; mudanças cirúrgicas apenas; o(s) comando(s) exato(s) de verificação daquele repo; quais blocos exigem decisão do usuário antes de começar; dependências entre repos marcadas com uma tag com o nome do repositório dependido, como **[nome-do-repo]**.
 4. `## O que fica como está` — as coisas que você deliberadamente não sinalizou, para o executor não "melhorar" nada ali.
-5. `## Simples`, `## Médio`, `## Complexo` — cada um com sub-blocos `### <tag>`. Cada item é uma linha numa tabela de quatro colunas: **Onde** (caminho e range `L<início>-<fim>`, ou vários caminhos), **Motivo** (por que deve sair, com o número verificado), **Antes** (o que existe), **Depois** (o substituto concreto: nome de função, one-liner, "nada"). Itens que o usuário precisa decidir vão sob Complexo com a pergunta declarada em Depois e marcados "sinalizado, não contado".
+5. `## Simples`, `## Médio`, `## Complexo` — cada um com sub-blocos `### <tag>`. Cada item é uma linha numa tabela de seis colunas, sempre nesta ordem: **✓** (checkbox `[ ]`, é assim que o usuário escolhe o que vai ser executado), **Onde** (caminho e range `L<início>-<fim>`, ou vários caminhos), **Motivo** (por que deve sair, com o número verificado), **Antes** (o que existe), **Depois** (o substituto concreto: nome de função, one-liner, "nada"), **Status** (sempre `Pendente` quando você escreve; o executor troca por `Concluído` ou `Falha: <motivo em uma linha>`). Cabeçalho literal:
+
+   ```
+   | ✓ | Onde | Motivo | Antes | Depois | Status |
+   |---|---|---|---|---|---|
+   | [ ] | … | … | … | … | Pendente |
+   ```
+
+   Itens que o usuário precisa decidir vão sob Complexo com a pergunta declarada em Depois e marcados "sinalizado, não contado".
 6. `## Ordem sugerida` — numerada; Simples primeiro, o que perguntar ao usuário antes de Médio ou Complexo, quais itens desbloqueiam outros.
 7. `## Skills sugeridas` — as skills que o executor deve invocar, pelo nome exato, e por quê.
 
